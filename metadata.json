@@ -1,0 +1,8 @@
+{
+  "name": "WINF™ | Business Suite™",
+  "description": "Plataforma premium para parceiros estratégicos Winf. Modelo de negócio validado para o mercado de alto padrão em arquitetura e soluções automotivas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

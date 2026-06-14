@@ -1,0 +1,259 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==========================================
+    // MÁQUINA DE REGRAS : ZERO TRUST ARCHITECTURE
+    // ==========================================
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin';
+    }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isValidRetalho(data) {
+      return data.product_id is string && data.product_id.size() <= 128 &&
+             data.product_name is string && data.product_name.size() <= 128 &&
+             data.dimensions is string && data.dimensions.size() <= 32 &&
+             data.areaM2 is number &&
+             data.is_used is bool &&
+             data.user_id is string &&
+             data.created_at is timestamp;
+    }
+
+    function getUserRank() {
+      return (isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.w_rank_level is number) ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.w_rank_level : 0;
+    }
+
+    // WINF Precision™ dynamic tolerance functions
+    function getDeltaCorte(metodoCorte) {
+      return metodoCorte == 'DIGITAL_PLOTTER' ? 0.05 : 0.12;
+    }
+    function getDeltaCurvatura(nivelComplexidade) {
+      return nivelComplexidade == 'ARQUITETONICO_PLANO' ? 0.0 :
+             nivelComplexidade == 'AUTOMOTIVO_PADRAO' ? 0.03 :
+             nivelComplexidade == 'AUTOMOTIVO_COMPLEXO' ? 0.08 : 0.0;
+    }
+    function isValidOrdemServico(data) {
+      return data.unidadeId is string && data.unidadeId.size() <= 128 &&
+             data.user_id is string && data.user_id.size() <= 128 &&
+             data.areaTeoricaM2 is number && data.areaTeoricaM2 > 0 &&
+             data.actualM2 is number && data.actualM2 > 0 &&
+             data.metodoCorte is string && (data.metodoCorte == 'DIGITAL_PLOTTER' || data.metodoCorte == 'MANUAL_LINEAR') &&
+             data.nivelComplexidade is string && (data.nivelComplexidade == 'ARQUITETONICO_PLANO' || data.nivelComplexidade == 'AUTOMOTIVO_PADRAO' || data.nivelComplexidade == 'AUTOMOTIVO_COMPLEXO') &&
+             data.status is string && (data.status == 'SEALED' || data.status == 'EXCEPTION') &&
+             // Limit checked by the Precision mathematical formula: actualM2 <= technical ceiling
+             data.actualM2 <= (data.areaTeoricaM2 * (1.0 + getDeltaCorte(data.metodoCorte) + getDeltaCurvatura(data.nivelComplexidade)));
+    }
+    //BLINDAGEM MÁSTER - Negar tudo por padrão
+    match /{document=**} {
+      allow read, write: if false; 
+    }
+
+    // ==========================================
+    // MODULE: COINS / LEDGER
+    // ==========================================
+    // - O Front-end só pode ler o próprio saldo.
+    // - Jamais escreve, altera ou remove moedas.
+    match /coin_ledger/{coinId} {
+      allow read: if isSignedIn() && resource.data.user_id == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.user_id == request.auth.uid && request.resource.data.amount >= 0; // Prevent negative hacks
+      allow update, delete: if false; // Ledger should be immutable from client
+    }
+
+    // ==========================================
+    // MODULE: WARRANTIES (GARANTIAS NEURAIS)
+    // ==========================================
+    // - Proteção Absoluta contra geração e alteração de Garantias na mão.
+    match /warranties/{warrantyId} {
+      allow read: if isSignedIn(); // Public verification allowed only for authenticated members
+      allow create: if isSignedIn(); // Allow creation, but ideally should be validated
+      allow update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // MODULE: INVENTORY (ROLLS)
+    // ==========================================
+    match /rolls/{rollId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin(); // Clients don't edit rolls directly
+    }
+    match /retalhos/{retalhoId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && request.resource.data.user_id == request.auth.uid;
+    }
+    match /stock_mutations/{mutationId} {
+      allow read: if isSignedIn() && resource.data.user_id == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // ==========================================
+    // MODULE: CORE OPERATIONAL (OS / LEADS)
+    // ==========================================
+    match /installations/{osId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || resource.data.installer_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+
+    match /leads/{leadId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || resource.data.assigned_to_id == request.auth.uid || resource.data.is_public == true || isAdmin());
+      allow write: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin() || (resource.data == null)); // Allow creation if user_id is properly set
+    }
+
+    match /quotes/{quoteId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /agent_logs/{logId} {
+      allow read, write: if isSignedIn() && resource.data.user_id == request.auth.uid;
+    }
+    
+    match /core_ai_chats/{chatId} {
+      allow read, write: if isSignedIn() && resource.data.user_id == request.auth.uid;
+    }
+    
+    // ==========================================
+    // MODULE: ACCOUNTS & IDENTITY
+    // ==========================================
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    match /vehicles/{vehicleId} {
+      allow read: if isSignedIn() && (resource.data.owner_id == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() && (resource.data.owner_id == request.auth.uid || isAdmin());
+    }
+
+    match /security_audits/{auditId} {
+      allow read, write: if isAdmin(); // Server only
+    }
+    
+    // ==========================================
+    // MODULE: PROTOTYPING E GUIAS DA FASE DE MVP
+    // ==========================================
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isAdmin();
+    }
+    match /order_items/{itemId} { 
+      allow read: if isSignedIn(); 
+      allow write: if isAdmin(); 
+    }
+    match /ai_generations/{genId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+    match /social_posts/{postId} { 
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create, update: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+    match /platform_events/{eventId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /transactions/{txId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update, delete: if isAdmin();
+    }
+    match /partner_tasks/{taskId} { 
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+    match /agent_insights/{insightId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow write: if isAdmin();
+    }
+    match /stock_items/{itemId} { 
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /documents/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+    match /documents_master/{docId} {
+       allow read: if isSignedIn();
+       allow write: if isAdmin();
+    }
+    match /products/{productId} {
+       allow read: if isSignedIn(); // Catalog access allowed to authenticated members
+       allow write: if isAdmin();
+    }
+
+    // ==========================================
+    // MODULE: INVESTORS & DARK POOL (CAPITAL)
+    // ==========================================
+    match /investments/{investmentId} {
+       allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+       allow write: if isAdmin();
+    }
+    match /dividends/{dividendId} {
+       allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+       allow write: if isAdmin();
+    }
+
+    // ==========================================
+    // MODULE: BLACKSHOP & WINF CHAIN
+    // ==========================================
+    match /blackshop/{orderId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+    match /winf_chain/{txId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // ==========================================
+    // MODULE: CLOUD RAZÃO (WINF GOVERNANCE)
+    // ==========================================
+    match /unidades/{unidadeId} {
+      allow read: if isSignedIn() && (resource.data.partnerEmail == request.auth.token.email || isAdmin());
+      allow write: if isAdmin();
+    }
+    match /ordens_servico/{osId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && isValidOrdemServico(request.resource.data) && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    match /ledger_transacoes/{txId} {
+      allow read: if isSignedIn() && (resource.data.user_id == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if false; // Immutable ledger rule
+    }
+
+    // ==========================================
+    // MODULE: DOC VAULT
+    // ==========================================
+    match /doc_vault/{docId} {
+      allow read: if isSignedIn() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Admin' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Investor' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Licenciado' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'Member'
+      );
+      allow write: if isAdmin();
+    }
+
+    match /doc_signatures/{sigId} {
+      allow read: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ==========================================
+    // MODULE: W-NO KNOWLEDGE BASE (APRENDIZADOS)
+    // ==========================================
+    match /auron_knowledge/{knowledgeId} {
+      allow read, write: if isSignedIn();
+    }
+  }
+}

@@ -1,0 +1,44 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+node_modules/
+.git
+.git/
+*.local
+
+# Development Utilities
+dev-utils
+dev-utils/
+
+# Build
+dist-ssr
+.eslintcache
+.vite
+
+# Other
+workspaces
+workspaces/
+database
+database/
+functions
+functions/
+supabase
+supabase/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
