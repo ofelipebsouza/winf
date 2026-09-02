@@ -1,0 +1,1 @@
+:PORT="3000"; cmd /c npm run dev > C:/Users/felip/Documents/projects/winf-glass-home/.freebuff/preview-04452a35-9c6f-455c-9cee-78616861e540.log 2>&1

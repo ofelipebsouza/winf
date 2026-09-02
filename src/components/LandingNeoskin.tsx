@@ -1,465 +1,1254 @@
-import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import KoenigseggMenu from "./KoenigseggMenu";
+import WinfFooter from "./WinfFooter";
 import {
-  ArrowLeft,
-  ShieldAlert,
+  Shield,
+  Zap,
+  Droplets,
+  Sparkles,
+  Thermometer,
+  AlertTriangle,
+  Flame,
+  ArrowRight,
+  X,
+  Send,
+  ExternalLink,
+  ChevronDown,
+  CheckCircle2,
+  Box,
+  Layers,
   Crosshair,
-  ChevronRight,
+  ShieldCheck,
+  Award,
+  Sun,
   Activity,
-  Cpu,
+  Check,
+  Plus,
+  Minus
 } from "lucide-react";
 
 interface LandingNeoskinProps {
-  onBack: () => void;
+  onBack?: () => void;
+  onNavigateToWinf?: () => void;
+  onNavigateToAerocore?: () => void;
+  onNavigateToCeramic?: () => void;
   onNavigateToCatalog?: () => void;
+  onNavigateToBunker?: () => void;
+  onNavigateToApocalypse?: () => void;
+  onOpenMenu?: () => void;
 }
 
-const NeoskinPreview: React.FC<{ onEnd: () => void; timeLeft: number }> = ({
-  onEnd,
-  timeLeft,
+interface SpecRow {
+  parameter: string;
+  icon: any;
+  bkr150: string;
+  apx190: string;
+  ghtLiq: string;
+}
+
+const SPEC_ROWS: SpecRow[] = [
+  {
+    parameter: "Categoria de Defesa",
+    icon: Shield,
+    bkr150: "TPU Elastomérico Premium",
+    apx190: "TPU Blindado Militar",
+    ghtLiq: "Nano-Cerâmico Vitrificador",
+  },
+  {
+    parameter: "Espessura Nominal",
+    icon: Layers,
+    bkr150: "150 Microns (6.0 mil)",
+    apx190: "190 Microns (7.5 mil)",
+    ghtLiq: "Camada Nano (10-15 nm)",
+  },
+  {
+    parameter: "Tecnologia Primária",
+    icon: Zap,
+    bkr150: "Auto-Cura Estrutural Térmica",
+    apx190: "Auto-Cura Instantânea por Calor",
+    ghtLiq: "Cristalização Sílica 9H",
+  },
+  {
+    parameter: "Alongamento Máximo",
+    icon: Crosshair,
+    bkr150: "400%",
+    apx190: "450%",
+    ghtLiq: "N/A (Ligação Molecular)",
+  },
+  {
+    parameter: "Resistência Química",
+    icon: Droplets,
+    bkr150: "Alta (Ácidos Leves, Sal)",
+    apx190: "Absoluta (Solventes, Combustíveis)",
+    ghtLiq: "Ultra-Hidrofóbica (Anti-Corrosiva)",
+  },
+  {
+    parameter: "Estabilidade UV",
+    icon: Sun,
+    bkr150: "99% de Bloqueio Ativo",
+    apx190: "99.9% Barreira Espectral",
+    ghtLiq: "Estabilizador Térmico Ativo",
+  },
+  {
+    parameter: "Garantia Homologada",
+    icon: Check,
+    bkr150: "8 Anos",
+    apx190: "Vitalícia (Lifetime)",
+    ghtLiq: "3 Anos",
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    id: "faq-1",
+    question: "Como funciona a tecnologia de auto-cura?",
+    answer: "Sob incidência solar, água morna ou calor moderado, a malha elastomérica de TPU cicatriza micro-riscos, marcas de lavagem e arranhões superficiais instantaneamente, restaurando o brilho espelhado original sem necessidade de polimento.",
+  },
+  {
+    id: "faq-2",
+    question: "A blindagem NeoSkin é resistente a impactos de alta energia?",
+    answer: "Sim. As variantes Bunker 150 e Apocalypse 190 possuem densidade molecular calibrada para absorver e dissipar a energia cinética de cascalhos, pedras de estrada e abrasão severa em alta velocidade, mantendo a pintura original 100% preservada.",
+  },
+  {
+    id: "faq-3",
+    question: "Este revestimento altera a aparência original do ativo?",
+    answer: "Não. A formulação ótica da NeoSkin possui índice de refração idêntico ao verniz automotivo de fábrica, proporcionando transparência cristalina pura com profundidade de brilho, ou acabamento Satin/Matte stealth sob encomenda.",
+  },
+];
+
+export const LandingNeoskin: React.FC<LandingNeoskinProps> = ({
+onBack,
+  onNavigateToWinf,
+  onNavigateToAerocore,
+  onNavigateToCeramic,
+  onNavigateToCatalog,
+  onNavigateToBunker,
+  onNavigateToApocalypse,
+  onOpenMenu,
 }) => {
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState("Orçamento Tático NeoSkin™ PPF");
+  const [activeTab, setActiveTab] = useState<string>("bunker");
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
+
+  // Form State
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formVehicle, setFormVehicle] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formInterest, setFormInterest] = useState("BUNKER 150 // PPF ELITE");
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  // Close modal on Escape
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        // menu handled globally
+        setIsContactModalOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleOpenContact = (subject?: string) => {
+    if (subject) setContactSubject(subject);
+    setIsContactModalOpen(true);
+  };
+
+  const handleDirectWhatsApp = (customMsg?: string) => {
+    const msg = customMsg || `Olá! Gostaria de solicitar um orçamento para aplicação de NeoSkin™ PPF.`;
+    window.open(`https://wa.me/5513997815375?text=${encodeURIComponent(msg)}`, "_blank");
+  };
+
+  const handleInlineContactSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormSubmitted(true);
+    const text = `*PROTOCOLO DE CONTATO // CANAL SEGURO NEOSKIN™*\n\n` +
+      `*Identificação:* ${formName}\n` +
+      `*E-mail / Contato:* ${formEmail || 'N/A'}\n` +
+      `*Escopo / Interesse:* ${formInterest}`;
+    
+    setTimeout(() => {
+      window.open(`https://wa.me/5513997815375?text=${encodeURIComponent(text)}`, "_blank");
+    }, 500);
+  };
+
+  const toggleFaq = (id: string) => {
+    setOpenFaq(openFaq === id ? null : id);
+  };
+
+  // Staggered reveal animations
+  const fadeInUp = {
+    initial: { opacity: 0, y: 35, filter: "blur(6px)" },
+    whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+    viewport: { once: false, amount: 0.2 },
+    transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+  };
+
   return (
-    <div className="relative min-h-screen bg-[#0E0E0E] text-[#D8D8D8] overflow-y-auto pb-0 selection:bg-[#E33B0E]/30 font-mono">
-      {/* Sticky top-bar showing the timer */}
-      <div className="fixed top-0 left-0 w-full bg-[#E33B0E] z-[100] px-6 py-2 flex justify-between items-center text-black border-b border-black">
-        <div className="flex items-center gap-3">
-          <Activity size={16} className="animate-pulse" />
-          <span className="text-xs md:text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] hidden sm:inline">
-            Status: Survival Mode // Temporary Access
-          </span>
-          <span className="text-xs md:text-[10px] font-black uppercase tracking-[0.2em] sm:hidden">
-            Temp Access
-          </span>
+    <div className="relative bg-black text-white font-sans selection:bg-[#5C743D]/40 selection:text-white overflow-x-hidden min-h-screen">
+      
+      {/* 01 — HERO SECTION */}
+      <section className="relative min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden">
+        {/* Background Video / Hero Porsche */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/images/neoskin-hero.png"
+            src="/videos/2.mp4"
+            className="w-full h-full object-cover object-center brightness-90 contrast-110 scale-105"
+          />
+          {/* Subtle Vignettes */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-black/60" />
+          <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/70" />
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-xl sm:text-2xl font-black tabular-nums">
-            {timeLeft}s
-          </span>
+
+        {/* Top Header */}
+        <header className="w-full flex items-center justify-between z-30 relative">
+          <div
+            onClick={onBack}
+            className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
+          >
+            <img 
+              src="/winf-logo.svg" 
+              alt="WINF™" 
+              className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
+            />
+          </div>
+
+          {/* Two-Bar Menu Toggle */}
           <button
-            onClick={onEnd}
-            className="bg-[#131314] text-[#E33B0E] px-4 py-1.5 text-xs md:text-[10px] md:text-sm md:text-[11px] uppercase font-black tracking-widest hover:bg-[#1A1A1A] hover:text-[#FF4A1A] transition-colors rounded-none"
+            onClick={() => onOpenMenu?.()}
+            className="group flex flex-col items-end justify-center gap-2 p-2.5 focus:outline-none cursor-pointer z-50 relative hover:opacity-80 transition-opacity"
+            aria-label="Abrir Menu"
           >
-            Abort
+            <span
+              className={`block h-[1.5px] bg-white transition-all duration-300 ease-out shadow-[0_1px_4px_rgba(0,0,0,0.8)] w-7 group-hover:w-8`}
+            />
+            <span
+              className={`block h-[1.5px] bg-white transition-all duration-300 ease-out shadow-[0_1px_4px_rgba(0,0,0,0.8)] w-5 group-hover:w-8`}
+            />
           </button>
-        </div>
-      </div>
+        </header>
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden border-b-4 border-[#222] pt-16">
-        <div className="absolute inset-0 bg-[#0E0E0E] z-0" />
-        <img
-          src="https://images.unsplash.com/photo-1506544777-62cd39efbf82?q=80&w=2000&auto=format&fit=crop"
-          alt="Neoskin Brutal Environment"
-          className="absolute inset-0 w-full h-full object-cover opacity-20 grayscale sepia-[0.3] contrast-150"
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-transparent via-[#0E0E0E]/80 to-[#0E0E0E]" />
-
-        {/* Tactical UI Overlay */}
-        <div className="absolute top-24 left-6 hidden md:block">
-           <div className="w-12 h-12 border-l-2 border-t-2 border-[#E33B0E]/50"></div>
-        </div>
-        <div className="absolute top-24 right-6 hidden md:block">
-           <div className="w-12 h-12 border-r-2 border-t-2 border-[#E33B0E]/50"></div>
-        </div>
-        <div className="absolute bottom-24 left-6 hidden md:block">
-           <div className="w-12 h-12 border-l-2 border-b-2 border-[#E33B0E]/50"></div>
-        </div>
-        <div className="absolute bottom-24 right-6 hidden md:block">
-           <div className="w-12 h-12 border-r-2 border-b-2 border-[#E33B0E]/50"></div>
-        </div>
-
-        <div className="relative z-10 px-6 max-w-5xl mx-auto w-full">
+        {/* Center Hero Title */}
+        <div className="flex-1 flex flex-col items-center justify-center my-auto px-4 z-20 text-center w-full">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
-            className="flex items-center gap-4 mb-8"
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col items-center"
           >
-            <div className="h-0.5 w-12 bg-[#E33B0E]"></div>
-            <span className="text-[#E33B0E] text-xs md:text-[10px] md:text-sm font-black uppercase tracking-[0.4em]">
-              Armadura Tática PPF
-            </span>
-            <div className="h-0.5 w-12 bg-[#E33B0E]"></div>
+            <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-[0.2em] sm:tracking-[0.25em] text-white uppercase leading-none font-sans flex items-baseline justify-center drop-shadow-[0_4px_35px_rgba(0,0,0,0.95)] whitespace-nowrap">
+              <span>N E O S K I N</span>
+              <span className="text-xs sm:text-base md:text-xl font-light text-zinc-300 ml-2 sm:ml-4 -translate-y-4 sm:-translate-y-8">
+                TM
+              </span>
+            </h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.2 }}
+              className="mt-6 sm:mt-8 text-[10px] sm:text-xs md:text-sm font-mono tracking-[0.25em] sm:tracking-[0.35em] text-zinc-300 uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] max-w-2xl leading-relaxed"
+            >
+              REDEFINING ABSOLUTE PROTECTION FOR A NEW GENERATION
+            </motion.p>
           </motion.div>
-          
-          <motion.h1
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-6xl md:text-9xl font-black tracking-tighter uppercase mb-6 leading-[0.8] text-[#F5F5F5] mix-blend-overlay"
-            style={{ textShadow: "4px 4px 0px rgba(227, 59, 14, 0.4)" }}
-          >
-            NEOSKIN<br/><span className="text-[0.6em] text-[#E33B0E]">BRUTAL</span>
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-sm md:text-xl font-bold text-[#888] mb-12 max-w-3xl leading-relaxed uppercase bg-[#131314]/50 p-6 border-l-4 border-[#E33B0E]"
-          >
-            A película de proteção que sobrevive ao fim do mundo. 
-            Desenvolvida para aguentar ambientes apocalípticos, florestas densas, 
-            arranhões extremos e as estradas mais destruídas.
-          </motion.p>
         </div>
-      </section>
 
-      {/* Attributes Section */}
-      <section className="py-24 px-6 relative border-y-4 border-[#1A1A1A] bg-[#131314]">
-        <div className="max-w-[1400px] mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-20">
-            <div className="col-span-1 border-r border-[#222] pr-12 hidden lg:block">
-              <Crosshair size={48} className="text-[#E33B0E] mb-8" />
-              <h2 className="text-4xl font-black uppercase tracking-tighter mb-6 leading-tight">
-                Engenharia <br/>Sobrevivencial
-              </h2>
-              <p className="text-[#666] uppercase text-xs leading-relaxed font-bold tracking-widest">
-                Enquanto o mundo desmorona, a NeoSkin permanece intacta. 
-                Uma barreira de sacrifício hiper-resistente para enfrentar o impiedoso.
-              </p>
-            </div>
-            
-            <div className="lg:col-span-2 grid sm:grid-cols-2 gap-8 gap-y-16">
-               <div>
-                  <div className="flex items-center gap-3 mb-4">
-                     <span className="bg-[#E33B0E] text-black text-xs md:text-[10px] font-black uppercase px-2 py-1">Crit_01</span>
-                     <h3 className="text-xl font-black uppercase tracking-tighter">Resistência Extrema</h3>
-                  </div>
-                  <p className="text-xs font-bold text-[#555] leading-relaxed uppercase">
-                     Formulada para suportar abrasão de galhos, pedras e detritos. O terreno off-road mais violento não é páreo.
-                  </p>
-               </div>
-               <div>
-                  <div className="flex items-center gap-3 mb-4">
-                     <span className="bg-[#E33B0E] text-black text-xs md:text-[10px] font-black uppercase px-2 py-1">Crit_02</span>
-                     <h3 className="text-xl font-black uppercase tracking-tighter">Auto-Cura Brutal</h3>
-                  </div>
-                  <p className="text-xs font-bold text-[#555] leading-relaxed uppercase">
-                     Arranhões severos curam com calor intenso. A película sofre o dano para que sua pintura continue impecável.
-                  </p>
-               </div>
-               <div>
-                  <div className="flex items-center gap-3 mb-4">
-                     <span className="bg-[#E33B0E] text-black text-xs md:text-[10px] font-black uppercase px-2 py-1">Crit_03</span>
-                     <h3 className="text-xl font-black uppercase tracking-tighter">Barreira Química</h3>
-                  </div>
-                  <p className="text-xs font-bold text-[#555] leading-relaxed uppercase">
-                     Intransponível para fluidos corrosivos, detritos biológicos pesados e agentes químicos degradantes do ambiente externo.
-                  </p>
-               </div>
-               <div>
-                  <div className="flex items-center gap-3 mb-4">
-                     <span className="bg-[#E33B0E] text-black text-xs md:text-[10px] font-black uppercase px-2 py-1">Crit_04</span>
-                     <h3 className="text-xl font-black uppercase tracking-tighter">Camuflagem UV</h3>
-                  </div>
-                  <p className="text-xs font-bold text-[#555] leading-relaxed uppercase">
-                     Estabilizadores UV reativos impedem a degradação da película sob o sol escaldante, mantendo estrutura molecular.
-                  </p>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Arsenal Lineup */}
-      <section className="py-32 px-6 relative bg-[url('https://images.unsplash.com/photo-1543326727-cf6c39e8f84c?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-fixed">
-        <div className="absolute inset-0 bg-[#0E0E0E]/90 bg-blend-multiply" />
-        
-        <div className="max-w-[1400px] mx-auto relative z-10">
-          <div className="mb-20">
-            <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-4 text-[#F5F5F5]">
-              Arsenal<span className="text-[#E33B0E]">.NeoSkin()</span>
-            </h2>
-            <div className="h-1 w-32 bg-[#E33B0E]"></div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                id: "B-200",
-                name: "Hazard",
-                desc: "150 Microns. A primeira linha de defesa urbana.",
-                img: "https://images.unsplash.com/photo-1620319520448-9f37c356ad79?auto=format&fit=crop&q=80&w=800"
-              },
-              {
-                id: "B-400",
-                name: "Bunker",
-                desc: "190 Microns. Resistência severa para rotas não mapeadas.",
-                img: "https://images.unsplash.com/photo-1506544777-62cd39efbf82?auto=format&fit=crop&q=80&w=800"
-              },
-              {
-                id: "B-800",
-                name: "Apocalypse",
-                desc: "Grau Militar. A armadura definitiva contra o caos.",
-                img: "https://images.unsplash.com/photo-1616056586036-6db8e967261a?auto=format&fit=crop&q=80&w=800"
-              }
-            ].map((armor, i) => (
-               <div key={i} className="group relative bg-[#131314] border-2 border-[#222] hover:border-[#E33B0E] transition-colors p-2 flex flex-col">
-                 <div className="relative h-64 overflow-hidden bg-[#131314] mb-4">
-                    <img src={armor.img} alt={armor.name} className="absolute inset-0 w-full h-full object-cover opacity-60 grayscale contrast-150 group-hover:scale-110 group-hover:opacity-100 transition-all duration-700" />
-                    <div className="absolute top-2 right-2 bg-[#E33B0E] text-black font-black text-xs md:text-[10px] px-2 py-1 uppercase">{armor.id}</div>
-                 </div>
-                 <div className="p-4 flex-1 flex flex-col justify-between">
-                    <div>
-                       <h3 className="text-3xl font-black uppercase tracking-tighter text-[#F5F5F5] mb-2">{armor.name}</h3>
-                       <p className="text-xs text-[#666] font-bold uppercase">{armor.desc}</p>
-                    </div>
-                    <button className="mt-8 grid grid-cols-[1fr_auto] border-2 border-[#333] hover:border-[#E33B0E] text-[#666] hover:text-[#E33B0E] transition-colors items-center font-black uppercase text-xs">
-                       <span className="py-3 px-4">Analisar Blueprint</span>
-                       <span className="p-3 border-l-2 border-inherit"><ChevronRight size={14} /></span>
-                    </button>
-                 </div>
-               </div>
+        {/* Full-Width 100% Infinite Marquee Strip (Positioned 24px higher) */}
+        <div className="w-[calc(100%+3rem)] sm:w-[calc(100%+5rem)] md:w-[calc(100%+7rem)] -mx-6 sm:-mx-10 md:-mx-14 py-4 sm:py-5 md:py-6 bg-black/15 backdrop-blur-xl border-y border-white/[0.08] overflow-hidden shadow-[0_4px_30px_rgba(0,0,0,0.2)] z-20 -translate-y-6 mb-4 sm:mb-6">
+          <div className="animate-infinite-ticker flex items-center whitespace-nowrap">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="flex items-center text-xs sm:text-sm font-mono tracking-[0.35em] sm:tracking-[0.45em] text-zinc-200 uppercase shrink-0">
+                <span>BARREIRA BALÍSTICA E ESTÉTICA</span>
+                <span className="mx-6 sm:mx-8 text-[#7A9856] text-xs">●</span>
+                <span>NEOSKIN™ DEFENSE</span>
+                <span className="mx-6 sm:mx-8 text-[#7A9856] text-xs">●</span>
+                <span>MILITARY SPECIFICATIONS</span>
+                <span className="mx-6 sm:mx-8 text-[#7A9856] text-xs">●</span>
+                <span>AUTO-CURA IMEDIATA</span>
+                <span className="mx-6 sm:mx-8 text-[#7A9856] text-xs">●</span>
+                <span>190 MICRONS HYDROPHOBIC</span>
+                <span className="mx-6 sm:mx-8 text-[#7A9856] text-xs">●</span>
+              </div>
             ))}
           </div>
         </div>
+
+        {/* Bottom Hero CTAs */}
+        <div className="w-full z-20 flex flex-col items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-1">
+            <button
+              onClick={() => {
+                if ((window as any).lenis) {
+                  (window as any).lenis.scrollTo("#arsenal", { duration: 1.4 });
+                } else {
+                  document.getElementById("arsenal")?.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="px-6 sm:px-8 py-3 rounded-none border border-white/30 bg-black/50 hover:bg-white hover:text-black text-white text-xs font-mono uppercase tracking-[0.25em] transition-all cursor-pointer backdrop-blur-sm shadow-xl"
+            >
+              ANALISAR ARSENAL
+            </button>
+            <button
+              onClick={onBack}
+              className="px-6 sm:px-8 py-3 rounded-none border border-white/30 bg-black/50 hover:bg-white hover:text-black text-white text-xs font-mono uppercase tracking-[0.25em] transition-all cursor-pointer backdrop-blur-sm shadow-xl"
+            >
+              VOLTAR AEROCORE
+            </button>
+          </div>
+        </div>
       </section>
 
-      <footer className="py-12 px-6 bg-[#131314] border-t-4 border-[#222] font-mono text-center">
-        <div className="text-[#E33B0E] text-2xl font-black tracking-tighter uppercase mb-4">NEOSKIN</div>
-        <p className="text-xs md:text-[10px] text-[#444] uppercase font-bold tracking-widest max-w-sm mx-auto">
-          Protocolo de Defesa Ativado.<br/>
-          (c) {new Date().getFullYear()} NeoSkin Ind. Militech Division.
-        </p>
-      </footer>
-    </div>
-  );
-};
+      {/* 02 — ENGENHARIA SOBREVIVENCIAL */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+        <div className="max-w-6xl mx-auto">
+          {/* Centered Section Header */}
+          <div className="text-center flex flex-col items-center mb-16">
+            <motion.div
+              {...fadeInUp}
+              className="text-xs sm:text-sm font-mono uppercase tracking-[0.35em] text-[#647C4A] mb-6 font-semibold"
+            >
+              ENGENHARIA SOBREVIVENCIAL
+            </motion.div>
 
-const LandingNeoskin: React.FC<LandingNeoskinProps> = ({ onBack }) => {
-  const [view, setView] = useState<"request" | "login" | "success" | "preview">("request");
-  const [timeLeft, setTimeLeft] = useState(20);
-  const [formData, setFormData] = useState({
-    nome: "",
-    codigo: "",
-  });
+            {/* Headline */}
+            <motion.h2
+              {...fadeInUp}
+              className="text-3xl sm:text-5xl md:text-6xl font-light tracking-tight leading-tight uppercase mb-6 max-w-4xl text-center"
+            >
+              <span className="text-[#647C4A] font-medium">ENQUANTO O MUNDO DESMORONA, </span>
+              <span className="text-white font-bold">A NEOSKIN PERMANECE INTACTA.</span>
+            </motion.h2>
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [view]);
+            {/* Subtext */}
+            <motion.p
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="text-base sm:text-xl text-zinc-300 font-light leading-relaxed max-w-3xl text-center"
+            >
+              Uma barreira de sacrifício hiper-resistente para enfrentar o impiedoso. Projetada para durar além das fronteiras do comum.
+            </motion.p>
+          </div>
 
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (view === "preview" && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (view === "preview" && timeLeft === 0) {
-      setView("request");
-      setTimeLeft(20);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [view, timeLeft]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (view === "request") {
-      setView("success");
-    } else {
-      onBack();
-    }
-  };
-
-  if (view === "preview") {
-    return (
-      <NeoskinPreview
-        onEnd={() => {
-          setView("request");
-          setTimeLeft(20);
-        }}
-        timeLeft={timeLeft}
-      />
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-[#0E0E0E] text-[#D8D8D8] font-mono selection:bg-[#E33B0E]/30 relative overflow-hidden flex flex-col justify-between p-6 md:p-10">
-      
-      {/* Background Grunge */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-         <div className="absolute inset-0 bg-[#0E0E0E]" />
-         <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/grunge-wall.png')]" />
-         <div className="absolute w-[1px] h-full bg-[#E33B0E]/10 left-[10%] top-0"></div>
-         <div className="absolute w-[1px] h-full bg-[#E33B0E]/10 left-[50%] top-0"></div>
-         <div className="absolute w-[1px] h-full bg-[#E33B0E]/10 right-[10%] top-0"></div>
-      </div>
-
-      <nav className="relative z-50 flex justify-between items-center w-full max-w-6xl mx-auto mb-12">
-        <button
-          onClick={onBack}
-          className="flex items-center gap-2 text-[#666] hover:text-[#E33B0E] transition-colors text-xs md:text-[10px] uppercase tracking-[0.2em] font-black group"
-        >
-          <ArrowLeft
-            size={14}
-            className="group-hover:-translate-x-1 transition-transform"
-          />{" "}
-          Abort Mission
-        </button>
-        <div className="flex items-center gap-2">
-          <ShieldAlert size={14} className="text-[#E33B0E]" />
-          <span className="font-black tracking-[0.3em] text-xs md:text-[10px] uppercase text-[#E33B0E]">
-            Secure Terminal
-          </span>
-        </div>
-      </nav>
-
-      <main className="relative z-10 flex-1 flex items-center justify-center w-full max-w-6xl mx-auto border-4 border-[#222] bg-[#131314] p-6 lg:p-0">
-        <div className="w-full grid lg:grid-cols-2 h-full">
-           
-           {/* Terminal Intro */}
-           <div className="hidden lg:flex flex-col justify-center p-16 border-r-4 border-[#222]">
-              <Cpu size={32} className="text-[#E33B0E] mb-8" />
-              <h1 className="text-7xl font-black tracking-tighter uppercase mb-6 leading-none text-[#F5F5F5]">
-                NEOSKIN<br/>BRUTAL
-              </h1>
-              <div className="w-16 h-2 bg-[#E33B0E] mb-8"></div>
-              <p className="text-sm text-[#888] font-bold uppercase leading-relaxed mb-12">
-                A armadura tática (PPF) construída para resistir além dos limites. 
-                Tecnologia de sacrifício hiper-resistente contra ambientes apocalípticos.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 text-xs md:text-[10px] uppercase font-black text-[#555]">
-                 <div className="border border-[#333] p-4 flex flex-col gap-2">
-                    <span className="text-[#E33B0E]">Status</span>
-                    <span>Classified Access</span>
-                 </div>
-                 <div className="border border-[#333] p-4 flex flex-col gap-2">
-                    <span className="text-[#E33B0E]">Integrity</span>
-                    <span>100% Guaranteed</span>
-                 </div>
+          {/* 4 Columns with Vertical Divider Lines */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-0 lg:divide-x divide-white/15">
+            {/* CRIT_01 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="lg:px-8 first:pl-0"
+            >
+              <div className="flex items-center gap-2 text-[#7A9856] mb-4">
+                <Box className="w-5 h-5 text-[#7A9856]" />
+                <span className="text-xs font-mono uppercase tracking-widest text-[#7A9856] font-bold">CRIT_01</span>
               </div>
-           </div>
+              <h3 className="text-base sm:text-lg font-bold text-[#7A9856] uppercase tracking-wide mb-3">
+                RESISTÊNCIA EXTREMA
+              </h3>
+              <p className="text-xs font-mono uppercase text-zinc-400 leading-relaxed">
+                ABRASÃO DE GALHOS, PEDRAS E DETRITOS OFF-ROAD.
+              </p>
+            </motion.div>
 
-           {/* Access Form */}
-           <div className="p-8 md:p-16 flex flex-col justify-center relative bg-[#131314]">
-              <AnimatePresence mode="wait">
-                 {/* REQUEST ACCESS */}
-                 {view === "request" && (
-                   <motion.div key="request" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      <div className="mb-12">
-                         <h2 className="text-2xl font-black uppercase tracking-tighter mb-2 text-[#F5F5F5]">Requisitar Operação</h2>
-                         <p className="text-xs text-[#E33B0E] uppercase font-bold tracking-widest">Identificação Necessária</p>
-                      </div>
+            {/* CRIT_02 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="lg:px-8"
+            >
+              <div className="flex items-center gap-2 text-[#7A9856] mb-4">
+                <Zap className="w-5 h-5 text-[#7A9856]" />
+                <span className="text-xs font-mono uppercase tracking-widest text-[#7A9856] font-bold">CRIT_02</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-[#7A9856] uppercase tracking-wide mb-3">
+                AUTO-CURA BRUTAL
+              </h3>
+              <p className="text-xs font-mono uppercase text-zinc-400 leading-relaxed">
+                ARRANHÕES SEVEROS CURAM COM CALOR INTENSO.
+              </p>
+            </motion.div>
 
-                      <form onSubmit={handleSubmit} className="space-y-6">
-                         <div className="space-y-2">
-                            <label className="text-xs md:text-[10px] text-[#666] uppercase font-black tracking-widest">Operador (Nome)</label>
-                            <input
-                              type="text"
-                              required
-                              className="w-full bg-[#111] border-2 border-[#333] p-4 text-xs text-[#D8D8D8] hover:border-[#555] focus:outline-none focus:border-[#E33B0E] focus:bg-[#1A1A1A] transition-colors font-bold uppercase placeholder-[#444]"
-                              placeholder="GHOST PROTOCOL 1"
-                              value={formData.nome}
-                              onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                            />
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-xs md:text-[10px] text-[#666] uppercase font-black tracking-widest">Código de Missão (E-mail)</label>
-                            <input
-                              type="email"
-                              required
-                              className="w-full bg-[#111] border-2 border-[#333] p-4 text-xs text-[#D8D8D8] hover:border-[#555] focus:outline-none focus:border-[#E33B0E] focus:bg-[#1A1A1A] transition-colors font-bold uppercase placeholder-[#444]"
-                              placeholder="ALPHA@SECTOR.COM"
-                              value={formData.codigo}
-                              onChange={(e) => setFormData({ ...formData, codigo: e.target.value })}
-                            />
-                         </div>
+            {/* CRIT_03 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="lg:px-8"
+            >
+              <div className="flex items-center gap-2 text-[#7A9856] mb-4">
+                <Droplets className="w-5 h-5 text-[#7A9856]" />
+                <span className="text-xs font-mono uppercase tracking-widest text-[#7A9856] font-bold">CRIT_03</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-[#7A9856] uppercase tracking-wide mb-3">
+                BARREIRA QUÍMICA
+              </h3>
+              <p className="text-xs font-mono uppercase text-zinc-400 leading-relaxed">
+                INTRANSPONÍVEL PARA FLUIDOS CORROSIVOS.
+              </p>
+            </motion.div>
 
-                         <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button
-                              type="submit"
-                              className="bg-[#E33B0E] text-black font-black uppercase tracking-widest text-xs md:text-[10px] p-4 hover:bg-white transition-colors"
-                            >
-                              ENVIAR DADOS
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setView("preview")}
-                              className="border-2 border-[#333] text-[#888] font-black uppercase tracking-widest text-xs md:text-[10px] p-4 hover:border-[#E33B0E] hover:text-[#E33B0E] transition-colors"
-                            >
-                              MODO VISUAL
-                            </button>
-                         </div>
-                      </form>
-
-                      <div className="mt-12 text-center text-[#444] text-xs md:text-[10px] font-bold uppercase tracking-widest">
-                         Operador Autorizado? <button onClick={() => setView("login")} className="text-[#E33B0E] hover:text-white underline ml-2 decoration-[#333] underline-offset-4">LOG_IN</button>
-                      </div>
-                   </motion.div>
-                 )}
-
-                 {/* LOGIN VIEW */}
-                 {view === "login" && (
-                   <motion.div key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                      <div className="mb-12">
-                         <h2 className="text-2xl font-black uppercase tracking-tighter mb-2 text-[#F5F5F5]">Sistema Restrito</h2>
-                         <p className="text-xs text-[#E33B0E] uppercase font-bold tracking-widest">Autenticação Tática</p>
-                      </div>
-
-                      <form onSubmit={handleSubmit} className="space-y-6">
-                         <div className="space-y-2">
-                            <label className="text-xs md:text-[10px] text-[#666] uppercase font-black tracking-widest">Chave Alpha (ID)</label>
-                            <input
-                              type="email"
-                              required
-                              className="w-full bg-[#111] border-2 border-[#333] p-4 text-xs text-[#D8D8D8] hover:border-[#555] focus:outline-none focus:border-[#E33B0E] focus:bg-[#1A1A1A] transition-colors font-bold uppercase"
-                            />
-                         </div>
-                         <div className="space-y-2">
-                            <label className="text-xs md:text-[10px] text-[#666] uppercase font-black tracking-widest">Decodificador (Pass)</label>
-                            <input
-                              type="password"
-                              required
-                              className="w-full bg-[#111] border-2 border-[#333] p-4 text-xs text-[#D8D8D8] hover:border-[#555] focus:outline-none focus:border-[#E33B0E] focus:bg-[#1A1A1A] transition-colors font-bold uppercase text-[16px] tracking-widest"
-                            />
-                         </div>
-
-                         <div className="pt-4 grid grid-cols-1 gap-4">
-                            <button
-                              type="submit"
-                              className="w-full bg-white text-black font-black uppercase tracking-widest text-xs md:text-[10px] p-4 hover:bg-[#E33B0E] transition-colors"
-                            >
-                              ACESSAR_Terminal
-                            </button>
-                         </div>
-                      </form>
-
-                      <div className="mt-12 text-center text-[#444] text-xs md:text-[10px] font-bold uppercase tracking-widest">
-                         Sem acesso? <button onClick={() => setView("request")} className="text-[#E33B0E] hover:text-white underline ml-2 decoration-[#333] underline-offset-4">SOLICITAR_REQ</button>
-                      </div>
-                   </motion.div>
-                 )}
-
-                 {/* SUCCESS */}
-                 {view === "success" && (
-                   <motion.div key="success" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center">
-                      <div className="w-16 h-16 border-2 border-[#E33B0E] flex items-center justify-center mx-auto mb-8 bg-[#E33B0E]/10">
-                         <Activity size={24} className="text-[#E33B0E] animate-pulse" />
-                      </div>
-                      <h2 className="text-2xl font-black uppercase tracking-tighter mb-4 text-[#F5F5F5]">Transmissão Recebida</h2>
-                      <p className="text-xs text-[#888] font-bold uppercase leading-relaxed mb-12">
-                         O sinal foi enviado aos nossos operadores. 
-                         Aguarde comunicação em canais criptografados caso seu perfil seja validado.
-                      </p>
-                      
-                      <button
-                        onClick={onBack}
-                        className="bg-transparent border-2 border-[#333] text-[#888] font-black uppercase tracking-widest text-xs md:text-[10px] p-4 py-3 hover:border-[#F5F5F5] hover:text-[#F5F5F5] transition-colors"
-                      >
-                        DESCONECTAR
-                      </button>
-                   </motion.div>
-                 )}
-              </AnimatePresence>
-           </div>
+            {/* CRIT_04 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="lg:px-8 last:pr-0"
+            >
+              <div className="flex items-center gap-2 text-[#7A9856] mb-4">
+                <Shield className="w-5 h-5 text-[#7A9856]" />
+                <span className="text-xs font-mono uppercase tracking-widest text-[#7A9856] font-bold">CRIT_04</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-[#7A9856] uppercase tracking-wide mb-3">
+                CAMUFLAGEM UV
+              </h3>
+              <p className="text-xs font-mono uppercase text-zinc-400 leading-relaxed">
+                ESTABILIZADORES REATIVOS IMPEDEM A DEGRADAÇÃO.
+              </p>
+            </motion.div>
+          </div>
         </div>
-      </main>
-      <div className="block mt-4"></div>
-    </div>
+      </section>
+
+      {/* 02.5 — ARMAS DE DEFESA (BUNKER 150 & APOCALYPSE 190) */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
+        {/* Background Video / Jungle Porsche */}
+        <div className="absolute inset-0 z-0">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/images/neoskin-hero.png"
+            src="/videos/3.mp4"
+            className="w-full h-full object-cover object-center brightness-50 contrast-125 scale-105"
+          />
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+        </div>
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          {/* Header Row */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div>
+              <motion.div
+                {...fadeInUp}
+                className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] mb-4 font-semibold"
+              >
+                ARSENAL.NEOSKIN()
+              </motion.div>
+              <motion.h2
+                {...fadeInUp}
+                className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight uppercase leading-none"
+              >
+                <span className="text-[#647C4A]">ARMAS DE </span>
+                <span className="text-white">DEFESA.</span>
+              </motion.h2>
+            </div>
+
+            <motion.div
+              {...fadeInUp}
+              className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.25em] text-zinc-400 text-right md:text-right"
+            >
+              AUTHORIZED ACCESS ONLY<br />
+              <span className="text-zinc-300">MILITECH DIVISION // SECURITY LEVEL 4</span>
+            </motion.div>
+          </div>
+
+          {/* 2 Floating Glass Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl">
+            {/* Bunker 150 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#546A36] border border-white/15 hover:border-[#546A36] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-[11px] font-mono text-zinc-400 group-hover:text-black font-bold uppercase tracking-widest transition-colors">
+                    BKR-150
+                  </span>
+                  <span className="w-6 h-[1.5px] bg-white/40 group-hover:bg-black transition-colors" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white group-hover:text-black uppercase tracking-tight mb-1 transition-colors">
+                  BUNKER 150
+                </h3>
+                <span className="text-xs font-mono text-[#7A9856] group-hover:text-black/90 uppercase tracking-widest block mb-6 font-bold transition-colors">
+                  150 MICRONS
+                </span>
+                <p className="text-xs sm:text-sm font-mono uppercase text-zinc-300 group-hover:text-black/90 leading-relaxed mb-8 transition-colors">
+                  A BARREIRA HIDROFÓBICA E TÁTICA QUE OBLITERA A OXIDAÇÃO EM CRUZADORES E LANCHAS ÁGEIS.
+                </p>
+              </div>
+
+              <div className="pt-6 border-t border-white/10 group-hover:border-black/20 transition-colors">
+                <button
+                  onClick={() => onNavigateToBunker?.()}
+                  className="w-full py-3.5 rounded-none border border-white/30 group-hover:border-black bg-transparent text-white group-hover:text-black text-xs font-mono uppercase tracking-[0.25em] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>ANALISAR</span>
+                  <ChevronDown className="w-3.5 h-3.5 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Apocalypse 190 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#546A36] border border-white/15 hover:border-[#546A36] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-[11px] font-mono text-zinc-400 group-hover:text-black font-bold uppercase tracking-widest transition-colors">
+                    APX-190
+                  </span>
+                  <span className="w-6 h-[1.5px] bg-white/40 group-hover:bg-black transition-colors" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white group-hover:text-black uppercase tracking-tight mb-1 transition-colors">
+                  APOCALYPSE 190
+                </h3>
+                <span className="text-xs font-mono text-[#7A9856] group-hover:text-black/90 uppercase tracking-widest block mb-6 font-bold transition-colors">
+                  190 MICRONS
+                </span>
+                <p className="text-xs sm:text-sm font-mono uppercase text-zinc-300 group-hover:text-black/90 leading-relaxed mb-8 transition-colors">
+                  PROTEÇÃO FÍSICA OCEÂNICA INTRANSPONÍVEL CONTRA CORAIS AFIADOS E IMPACTOS DE ALTA ENERGIA NO CAIS.
+                </p>
+              </div>
+
+              <div className="pt-6 border-t border-white/10 group-hover:border-black/20 transition-colors">
+                <button
+                  onClick={() => onNavigateToApocalypse?.()}
+                  className="w-full py-3.5 rounded-none border border-white/30 group-hover:border-black bg-transparent text-white group-hover:text-black text-xs font-mono uppercase tracking-[0.25em] font-bold transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>ANALISAR</span>
+                  <ChevronDown className="w-3.5 h-3.5 -rotate-90 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 03 — ARSENAL INDUSTRIAL // PROTEÇÃO MULTIFUNCIONAL */}
+      <section id="arsenal" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+        <div className="max-w-6xl mx-auto">
+          {/* Centered Section Header */}
+          <div className="text-center flex flex-col items-center mb-16">
+            <motion.div
+              {...fadeInUp}
+              className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] mb-6 font-semibold"
+            >
+              ARSENAL INDUSTRIAL // NEOSKIN
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h2
+              {...fadeInUp}
+              className="text-3xl sm:text-5xl md:text-6xl font-light italic tracking-tight text-white uppercase mb-6 max-w-4xl text-center"
+            >
+              PROTEÇÃO MULTIFUNCIONAL DE NÍVEL TÁTICO.
+            </motion.h2>
+
+            {/* Subtext */}
+            <motion.p
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="text-sm sm:text-base text-zinc-300 font-light leading-relaxed max-w-3xl text-center"
+            >
+              A mesma precisão molecular aplicada à proteção de ativos estratégicos, estruturas militares e maquinário pesado. Um investimento sólido para operações onde a falha não é uma opção.
+            </motion.p>
+          </div>
+
+          {/* 4 Dark Tactical Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {/* Card 1 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Shield className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-3">
+                  DUREZA &gt; 9H
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Resistência extrema contra abrasão e riscos, validada em testes industriais.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Thermometer className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-3">
+                  ESTABILIDADE TÉRMICA
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Proteção contra temperaturas de -50°C até ambientes críticos de alta caloria.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Zap className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-3">
+                  BARREIRA QUÍMICA
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  100% resistente a solventes, ácidos e contaminantes ambientais agressivos.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 4 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <AlertTriangle className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-base font-bold text-white uppercase tracking-wider mb-3">
+                  DEFESA UV & CORROSÃO
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Previne envelhecimento prematuro, oxidação e degradação estrutural.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bottom Two-Column Block */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+            {/* Left: Aplicações Estratégicas */}
+            <motion.div
+              {...fadeInUp}
+              className="p-8 sm:p-10 rounded-none bg-black/40 border border-white/10 flex flex-col justify-between"
+            >
+              <div>
+                <h3 className="text-xl font-light italic text-[#7A9856] uppercase tracking-wider mb-8">
+                  APLICAÇÕES ESTRATÉGICAS
+                </h3>
+                <ul className="space-y-4 text-xs sm:text-sm font-mono uppercase text-zinc-300">
+                  <li className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-[#7A9856]" />
+                    <span>FACHADAS E VIDROS INDUSTRIAIS</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-[#7A9856]" />
+                    <span>ESTRUTURAS TÁTICAS E MILITARES</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-[#7A9856]" />
+                    <span>AVIAÇÃO E TRANSPORTE DE CARGA</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-[#7A9856]" />
+                    <span>EQUIPAMENTOS DE MINERAÇÃO E LOGÍSTICA</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 bg-[#7A9856]" />
+                    <span>SUPERFÍCIES EM MÁRMORE, VIDRO, MADEIRAS E FIBRAS</span>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* Right: Solicite um Orçamento Tático */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="p-8 sm:p-10 rounded-none bg-black/40 border border-white/10 flex flex-col justify-center text-center items-center"
+            >
+              <h3 className="text-xl font-bold italic text-[#7A9856] uppercase tracking-wider mb-4">
+                SOLICITE UM ORÇAMENTO TÁTICO
+              </h3>
+              <p className="text-sm text-zinc-300 font-light mb-8 max-w-sm">
+                Proteja seus ativos com a tecnologia de defesa da NeoSkin.
+              </p>
+              <button
+                onClick={() => handleOpenContact("Orçamento Tático NeoSkin Industrial")}
+                className="w-full max-w-xs py-4 rounded-none bg-[#4E6232] hover:bg-[#5C743D] text-white font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl"
+              >
+                ORÇAMENTO GRATUITO
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 04 — NEOSKIN // PELÍCULA DE PROTEÇÃO */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+        <div className="max-w-6xl mx-auto">
+          {/* Centered Section Header */}
+          <div className="text-center flex flex-col items-center mb-16">
+            <motion.div
+              {...fadeInUp}
+              className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] mb-6 font-semibold"
+            >
+              NEOSKIN // PELÍCULA DE PROTEÇÃO
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h2
+              {...fadeInUp}
+              className="text-3xl sm:text-5xl md:text-6xl font-light italic tracking-tight text-white uppercase mb-6 max-w-4xl text-center"
+            >
+              O AUGE DA PROTEÇÃO DE PINTURA.
+            </motion.h2>
+
+            {/* Subtext */}
+            <motion.p
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="text-sm sm:text-base text-zinc-300 font-light leading-relaxed max-w-3xl text-center"
+            >
+              A escolha definitiva para quem exige o melhor. Nossa película de última geração utiliza a mesma tecnologia nano-cerâmica que nos tornou líderes, garantindo um acabamento impecável e durabilidade excepcional.
+            </motion.p>
+          </div>
+
+          {/* 4 Protection Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Card 1 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Droplets className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+                  EXTREMAMENTE HIDROFÓBICO
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Repele água sem esforço, mantendo acabamento limpo e brilhante com manutenção mínima.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Sparkles className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+                  TECNOLOGIA DE AUTOCURA INSANA
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Arranhou? Ele se auto regenera magicamente com calor! Tecnologia que mantém sua superfície sempre perfeita.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Shield className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+                  RESISTÊNCIA SUPERIOR
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Defesa avançada contra detritos, excrementos de pássaros e contaminantes ambientais.
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Card 4 */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="p-8 rounded-none bg-black/60 border border-white/10 hover:border-[#647C4A]/50 transition-all flex flex-col justify-between shadow-xl"
+            >
+              <div>
+                <Zap className="w-7 h-7 text-[#7A9856] mb-6" />
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-3">
+                  INFUSÃO DE CERÂMICA
+                </h3>
+                <p className="text-xs text-zinc-400 font-light leading-relaxed">
+                  Combina película durável com tecnologia cerâmica para brilho incomparável.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 — DEFESA PERSONALIZADA */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+        <div className="max-w-6xl mx-auto">
+          <div className="p-8 sm:p-14 rounded-none bg-black/70 border border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center shadow-2xl">
+            {/* Left Content */}
+            <motion.div {...fadeInUp} className="space-y-6">
+              <h3 className="text-2xl sm:text-4xl font-light italic text-[#7A9856] uppercase tracking-wider">
+                DEFESA PERSONALIZADA
+              </h3>
+              <p className="text-sm sm:text-base text-zinc-300 font-light leading-relaxed">
+                Com uma variedade de opções, personalize a proteção exata onde seu veículo mais precisa. Instalação meticulosa feita por especialistas autorizados.
+              </p>
+              <div className="text-xs font-mono uppercase tracking-widest text-zinc-200 font-bold pt-2">
+                GARANTIA LÍDER DO SETOR PARA SUA TRANQUILIDADE.
+              </div>
+              <div className="pt-4">
+                <button
+                  onClick={() => handleOpenContact("Orçamento Personalizado NeoSkin PPF")}
+                  className="px-8 py-4 rounded-none bg-white hover:bg-zinc-200 text-black font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl flex items-center gap-2"
+                >
+                  <span>SOLICITAR ORÇAMENTO</span>
+                  <ChevronDown className="w-4 h-4 -rotate-90" />
+                </button>
+              </div>
+            </motion.div>
+
+            {/* Right Visual Frame with Live Video */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="aspect-video sm:aspect-square lg:aspect-video rounded-none bg-zinc-950 border border-white/15 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-2xl"
+            >
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                poster="/images/neoskin-hero.png"
+                src="/videos/3.mp4"
+                className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
+              <div className="relative z-10 flex flex-col items-center gap-3 p-6">
+                <ShieldCheck className="w-10 h-10 text-[#7A9856] group-hover:scale-110 transition-transform duration-500 drop-shadow" />
+                <span className="text-xs sm:text-sm font-mono italic tracking-[0.3em] text-white uppercase drop-shadow font-bold">
+                  // NEOSKIN_PPF_ULTRA
+                </span>
+                <span className="text-[10px] font-mono text-zinc-300 tracking-wider drop-shadow bg-black/60 px-3 py-1 rounded-none border border-white/10">
+                  HIGH-DENSITY MOLECULAR ARMOR
+                </span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* 06 — DATASHEET.NEOSKIN() // ESPECIFICAÇÕES TÉCNICAS DETALHADAS */}
+      <section id="datasheet" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+        <div className="max-w-6xl mx-auto">
+          {/* Header & Tabs */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
+            <div>
+              <motion.div
+                {...fadeInUp}
+                className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] mb-4 font-semibold"
+              >
+                DATASHEET.NEOSKIN()
+              </motion.div>
+              <motion.h2
+                {...fadeInUp}
+                className="text-4xl sm:text-6xl md:text-7xl font-black italic tracking-tight uppercase leading-[0.9]"
+              >
+                <span className="text-[#647C4A] block">ESPECIFICAÇÕES</span>
+                <span className="text-zinc-300 block">TÉCNICAS</span>
+                <span className="text-zinc-500 block">DETALHADAS</span>
+              </motion.h2>
+            </div>
+
+            {/* Filter Tabs Box */}
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="p-2 border border-white/15 rounded-none bg-black/60 flex flex-wrap gap-1.5 self-start lg:self-end backdrop-blur-md"
+            >
+              {[
+                { id: "all", label: "MATRIZ COMPLETA" },
+                { id: "bunker", label: "BUNKER 150" },
+                { id: "apocalypse", label: "APOCALYPSE 190" },
+                { id: "ghost", label: "GHOST LIQUID" },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-5 py-2.5 rounded-none text-xs font-mono tracking-widest uppercase transition-all cursor-pointer ${
+                    activeTab === tab.id
+                      ? "bg-white text-black font-bold shadow-lg"
+                      : "text-zinc-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Technical Specifications Table */}
+          <motion.div
+            {...fadeInUp}
+            transition={{ duration: 0.9, delay: 0.2 }}
+            className="rounded-none border border-white/15 bg-black/70 backdrop-blur-md overflow-hidden shadow-2xl"
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-white/15 text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400 bg-zinc-950/80">
+                    <th className="py-5 px-6 font-semibold">PARÂMETRO</th>
+                    <th className={`py-5 px-6 font-semibold transition-colors ${activeTab === 'bunker' ? 'text-[#7A9856] bg-white/5' : ''}`}>
+                      ▪ BKR-150 BUNKER
+                    </th>
+                    <th className={`py-5 px-6 font-semibold transition-colors ${activeTab === 'apocalypse' ? 'text-[#7A9856] bg-white/5' : ''}`}>
+                      ▪ APX-190 APOCALYPSE
+                    </th>
+                    <th className={`py-5 px-6 font-semibold transition-colors ${activeTab === 'ghost' ? 'text-[#7A9856] bg-white/5' : ''}`}>
+                      ▪ GHT-LIQ GHOST LIQUID
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10 text-xs sm:text-sm font-mono">
+                  {SPEC_ROWS.map((row, idx) => {
+                    const IconComponent = row.icon;
+                    return (
+                      <tr key={row.parameter} className="hover:bg-white/[0.03] transition-colors">
+                        <td className="py-5 px-6 font-medium text-zinc-300 flex items-center gap-3">
+                          <IconComponent className="w-4 h-4 text-[#7A9856]" />
+                          <span>{row.parameter}</span>
+                        </td>
+                        <td className={`py-5 px-6 text-zinc-200 transition-colors ${activeTab === 'bunker' ? 'text-[#7A9856] font-bold bg-white/[0.04]' : ''}`}>
+                          {row.bkr150}
+                        </td>
+                        <td className={`py-5 px-6 text-zinc-200 transition-colors ${activeTab === 'apocalypse' ? 'text-[#7A9856] font-bold bg-white/[0.04]' : ''}`}>
+                          {row.apx190}
+                        </td>
+                        <td className={`py-5 px-6 text-zinc-200 transition-colors ${activeTab === 'ghost' ? 'text-[#7A9856] font-bold bg-white/[0.04]' : ''}`}>
+                          {row.ghtLiq}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Table Footer */}
+            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-500 uppercase tracking-widest bg-zinc-950/60">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#7A9856] animate-pulse" />
+                <span>TODOS OS TESTES HOMOLOGADOS EM CONFORMIDADE COM AS DIRETIVAS MILITARES ASTM & ISO.</span>
+              </div>
+              <div>ID: NS-SPEC-REV2026</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 07 — DÚVIDAS TÁTICAS (FAQ) */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <h2 className="text-2xl sm:text-4xl font-light tracking-[0.3em] uppercase text-zinc-200">
+              D Ú V I D A S   T Á T I C A S
+            </h2>
+          </motion.div>
+
+          {/* Accordion List */}
+          <div className="space-y-4">
+            {FAQ_ITEMS.map((faq) => {
+              const isOpen = openFaq === faq.id;
+              return (
+                <motion.div
+                  key={faq.id}
+                  {...fadeInUp}
+                  className="border-b border-white/15 pb-4"
+                >
+                  <button
+                    onClick={() => toggleFaq(faq.id)}
+                    className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group"
+                  >
+                    <span>{faq.question}</span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-zinc-400 group-hover:text-white transition-transform duration-300 ${
+                        isOpen ? "rotate-180 text-[#7A9856]" : ""
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-xs sm:text-sm font-light text-zinc-400 leading-relaxed pt-2 pb-4">
+                          {faq.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 08 — CINEMATIC CAR SCENE BANNER */}
+      <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/images/neoskin-hero.png"
+          src="/videos/2.mp4"
+          className="w-full h-full object-cover object-center brightness-75 scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/60" />
+      </section>
+
+      {/* 09 — PROTOCOLO DE CONTATO // CANAL SEGURO */}
+      <section id="contato" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+        <div className="max-w-3xl mx-auto">
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <span className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] block mb-3 font-semibold">
+              PROTOCOLO DE CONTATO // CANAL SEGURO
+            </span>
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-light tracking-tight uppercase text-white">
+              FALE CONOSCO.
+            </h2>
+          </motion.div>
+
+          {formSubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="p-10 rounded-none bg-zinc-950 border border-[#7A9856]/40 text-center"
+            >
+              <CheckCircle2 className="w-12 h-12 text-[#7A9856] mx-auto mb-4" />
+              <h3 className="text-2xl font-light text-white mb-2">Protocolo Transmitido</h3>
+              <p className="text-xs sm:text-sm text-zinc-400 font-light max-w-md mx-auto mb-6">
+                Um especialista técnico da divisão NeoSkin entrará em contato via WhatsApp de forma segura e imediata.
+              </p>
+              <button
+                onClick={() => setFormSubmitted(false)}
+                className="text-xs font-mono uppercase tracking-widest text-[#7A9856] hover:underline"
+              >
+                Enviar nova mensagem
+              </button>
+            </motion.div>
+          ) : (
+            <motion.form
+              {...fadeInUp}
+              onSubmit={handleInlineContactSubmit}
+              className="space-y-10"
+            >
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                    IDENTIFICAÇÃO
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    placeholder="NOME COMPLETO"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                    className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-[#7A9856] outline-none transition-colors rounded-none"
+                  />
+                </div>
+
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                    SINAL PROFISSIONAL
+                  </span>
+                  <input
+                    type="text"
+                    required
+                    placeholder="E-MAIL OU WHATSAPP"
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                    className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-[#7A9856] outline-none transition-colors rounded-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  ESCOPO DO PROJETO
+                </span>
+                <select
+                  value={formInterest}
+                  onChange={(e) => setFormInterest(e.target.value)}
+                  className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-[#7A9856] outline-none cursor-pointer rounded-none"
+                >
+                  <option value="BUNKER 150 // PPF ELITE">BUNKER 150 // PPF ELITE</option>
+                  <option value="APOCALYPSE 190 // PPF MILITAR">APOCALYPSE 190 // PPF MILITAR</option>
+                  <option value="GHOST LIQUID // NANO CERÂMICA">GHOST LIQUID // NANO CERÂMICA</option>
+                  <option value="PROJETO ESPECIAL // INDUSTRIAL & TÁTICO">PROJETO ESPECIAL // INDUSTRIAL & TÁTICO</option>
+                </select>
+              </div>
+
+              {/* Action Buttons Row */}
+              <div className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-6">
+                <button
+                  type="submit"
+                  className="w-full sm:w-auto px-12 py-4 rounded-none border border-white/30 bg-black hover:bg-white hover:text-black text-white text-xs font-mono uppercase tracking-[0.25em] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+                >
+                  <span>ENVIAR</span>
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleDirectWhatsApp()}
+                  className="w-full sm:w-auto px-12 py-4 rounded-none border border-[#4E6232] bg-[#4E6232]/20 hover:bg-[#4E6232] text-[#88A85C] hover:text-white text-xs font-mono uppercase tracking-[0.25em] transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xl"
+                >
+                  <span>WHATSAPP</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </motion.form>
+          )}
+        </div>
+      </section>
+
+{/* Interactive Contact / Quote Modal */}
+      <AnimatePresence>
+        {isContactModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="w-full max-w-lg bg-zinc-950 border border-white/15 rounded-none p-6 sm:p-10 shadow-2xl relative"
+            >
+              <button
+                onClick={() => setIsContactModalOpen(false)}
+                className="absolute top-6 right-6 text-zinc-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#7A9856] block mb-2">
+                NEOSKIN™ // ORÇAMENTO TÁTICO
+              </span>
+              <h3 className="text-2xl font-light text-white uppercase tracking-tight mb-6">
+                {contactSubject}
+              </h3>
+
+              {formSubmitted ? (
+                <div className="text-center py-8">
+                  <CheckCircle2 className="w-12 h-12 text-[#7A9856] mx-auto mb-4" />
+                  <h4 className="text-lg text-white font-medium mb-2">Solicitação Preparada</h4>
+                  <p className="text-xs text-zinc-400">Você será redirecionado para o WhatsApp de atendimento oficial.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleInlineContactSubmit} className="space-y-4">
+                  <div>
+                    <label className="text-xs font-mono text-zinc-300 block mb-1">Nome Completo *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Seu nome"
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-sm text-white focus:border-[#7A9856] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-mono text-zinc-300 block mb-1">Veículo ou Ativo a ser protegido *</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ex: Porsche 911 / Vidros Industriais"
+                      value={formVehicle}
+                      onChange={(e) => setFormVehicle(e.target.value)}
+                      className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-sm text-white focus:border-[#7A9856] outline-none"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-mono text-zinc-300 block mb-1">WhatsApp *</label>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="(00) 00000-0000"
+                        value={formPhone}
+                        onChange={(e) => setFormPhone(e.target.value)}
+                        className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-sm text-white focus:border-[#7A9856] outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-mono text-zinc-300 block mb-1">Interesse *</label>
+                      <select
+                        value={formInterest}
+                        onChange={(e) => setFormInterest(e.target.value)}
+                        className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-xs text-white focus:border-[#7A9856] outline-none"
+                      >
+                        <option value="BUNKER 150 // PPF ELITE">BUNKER 150</option>
+                        <option value="APOCALYPSE 190 // PPF MILITAR">APOCALYPSE 190</option>
+                        <option value="GHOST LIQUID // NANO CERÂMICA">GHOST LIQUID</option>
+                        <option value="PROJETO ESPECIAL">PROJETO ESPECIAL</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full mt-4 py-4 rounded-none bg-[#4E6232] hover:bg-[#5C743D] text-white font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl flex items-center justify-center gap-2"
+                  >
+                    <span>ENVIAR SOLICITAÇÃO</span>
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}      </AnimatePresence>
+
+      {/* ── FOOTER ── */}
+      <WinfFooter brandName="NEOSKIN" />
+
+</div>
   );
 };
+
 
 export default LandingNeoskin;

@@ -1,21 +1,61 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import "tailwindcss";
-@import 'leaflet/dist/leaflet.css';
 
+/* ═══════════════════════════════════════════
+   WINF OS™ // Global Design System
+   ═══════════════════════════════════════════ */
+
+/* ── Font: Gustavo (Primary) ── */
+@font-face {
+  font-family: 'Gustavo';
+  src: url('/fonts/gustavo-thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gustavo';
+  src: url('/fonts/gustavo-light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gustavo';
+  src: url('/fonts/gustavo-regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gustavo';
+  src: url('/fonts/gustavo-medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Gustavo';
+  src: url('/fonts/gustavo-bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Tailwind Theme ── */
 @theme {
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: "Gustavo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  
-  --color-winf-background: var(--winf-background);
-  --color-winf-surface: var(--winf-surface);
-  --color-winf-surface_hover: var(--winf-surface-hover);
-  --color-winf-border: var(--winf-border);
+  --font-heading: "Gustavo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --color-winf-background: #131314;
+  --color-winf-surface: #1e1f20;
+  --color-winf-surface_hover: #282a2c;
+  --color-winf-border: #444746;
   --color-winf-primary: #ffffff;
   --color-winf-primary_hover: #f4f4f5;
-  --color-winf-text_primary: var(--winf-text-primary);
-  --color-winf-text_secondary: var(--winf-text-secondary);
-  --color-winf-text_muted: var(--winf-text-muted);
+  --color-winf-text_primary: #e3e3e3;
+  --color-winf-text_secondary: #c4c7c5;
+  --color-winf-text_muted: #8e918f;
   --color-winf-accent: #a1a1aa;
 
   --animate-scan: scan 3s linear infinite;
@@ -34,6 +74,7 @@
   }
 }
 
+/* ── Custom Utilities ── */
 @utility text-shadow-glow {
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
@@ -42,244 +83,62 @@
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
+/* ── Base Layer ── */
 @layer base {
-  :root {
-    --winf-background: #131314;
-    --winf-surface: #1e1f20;
-    --winf-surface-hover: #282a2c;
-    --winf-border: #444746;
-    --winf-primary: #ffffff;
-    --winf-primary-hover: #f1f5f9;
-    --winf-text-primary: #e3e3e3;
-    --winf-text-secondary: #c4c7c5; /* fallback comfort neutral slate-300 */
-    --winf-text-muted: #8e918f;
-    --winf-accent: #ffffff;
-    --winf-primary-rgb: 255, 255, 255;
-
-    /* --- WINF OS™ // GLOBAL CORE DESIGN SYSTEM (FASE 1) --- */
-    --bg-dark: #131314;
-    --card-dark: #1e1f20;
-    --border-industrial: #444746;
-    --accent-winf: #e3e3e3;
-    --text-muted: #8e918f;
-    --font-mono: 'JetBrains Mono', monospace;
+  html.lenis, html.lenis body {
+    height: auto;
   }
 
-  html {
-    scroll-behavior: smooth;
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
   }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
   body {
-    @apply bg-winf-background text-winf-text_primary font-sans antialiased;
-    background-color: var(--bg-dark);
-    color: var(--accent-winf);
-    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.04) 1px, transparent 0);
-    background-size: 40px 40px;
+    @apply bg-winf-background text-winf-text_primary antialiased;
+    font-family: 'Gustavo', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.6;
     letter-spacing: 0.01em;
+    background-image: radial-gradient(circle at 1px 1px, rgba(148, 163, 184, 0.04) 1px, transparent 0);
+    background-size: 40px 40px;
   }
+
   ::selection {
     @apply bg-winf-primary text-winf-background;
   }
 }
 
-/* Sistema de Grid Responsivo Unificado */
-.winf-container {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 15px;
-  padding: 20px;
-  max-width: 1440px;
-  margin: auto;
+/* ── Ticker Animation ── */
+@keyframes infinite-ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-/* Mobile-First: Comportamento para Celular */
-@media (max-width: 768px) {
-  .winf-container { 
-    grid-template-columns: 1fr; 
-  }
+.animate-infinite-ticker {
+  display: flex;
+  width: max-content;
+  animation: infinite-ticker 65s linear infinite;
+  will-change: transform;
 }
 
-/* Componente Padrão de Caixa Industrial */
-.winf-card {
-  background: var(--card-dark);
-  border: 1px solid var(--border-industrial);
-  padding: 20px;
-  transition: 0.2s;
+.animate-infinite-ticker:hover {
+  animation-play-state: paused;
 }
 
-/* Datepicker Overrides */
-.react-datepicker {
-  @apply !bg-[#0a0a0a] !border !border-white/10 !rounded-2xl !font-sans !text-white !shadow-2xl;
-}
-
-.react-datepicker__header {
-  @apply !bg-[#0a0a0a] !border-b !border-white/10 !rounded-t-2xl !pt-4;
-}
-
-.react-datepicker__current-month, 
-.react-datepicker__day-name {
-  @apply !text-white/60 !font-bold !uppercase !tracking-widest !text-[10px];
-}
-
-.react-datepicker__day {
-  @apply !text-white/80 hover:!bg-winf-primary hover:!text-black !rounded-lg !transition-all;
-}
-
-.react-datepicker__day--selected {
-  @apply !bg-winf-primary !text-black !font-bold;
-}
-
-.react-datepicker__day--keyboard-selected {
-  @apply !bg-white/10 !text-white;
-}
-
-.react-datepicker__day--outside-month {
-  @apply !text-white/20;
-}
-
-.react-datepicker__navigation {
-  @apply !top-4;
-}
-
-.react-datepicker__triangle {
-  @apply !hidden;
-}
-
-.leaflet-popup.winf-popup .leaflet-popup-content-wrapper {
-  background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 4px;
-}
-
-.leaflet-popup.winf-popup .leaflet-popup-tip {
-  background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.leaflet-popup.winf-popup .leaflet-popup-close-button {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.leaflet-popup.winf-popup .leaflet-popup-close-button:hover {
-  color: white;
-}
-
-/* Elite Design Utilities */
-.scanline-overlay {
-  position: relative;
-}
-
-.scanline-overlay::before {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  z-index: 2;
-  background-size: 100% 2px, 3px 100%;
-  pointer-events: none;
-  opacity: 0.1;
-}
-
-.scanline-overlay-line {
-  width: 100%;
-  height: 100px;
-  z-index: 3;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(0, 0, 0, 0) 100%);
-  opacity: 0.1;
-  position: absolute;
-  bottom: 100%;
-  animation: scanline 10s linear infinite;
-}
-
-@keyframes scanline {
-  0% { bottom: 100%; }
-  80% { bottom: 100%; }
-  100% { bottom: -100px; }
-}
-
-.glitch {
-  position: relative;
-}
-
-.glitch::before,
-.glitch::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-}
-
-.glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 #ff00c1;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
-}
-
-.glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 #00fff9, 2px 2px #ff00c1;
-  animation: glitch-anim2 1s infinite linear alternate-reverse;
-}
-
-@keyframes glitch-anim {
-  0% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
-  5% { clip: rect(70px, 9999px, 71px, 0); transform: skew(0.13deg); }
-  10% { clip: rect(90px, 9999px, 98px, 0); transform: skew(0.36deg); }
-  15% { clip: rect(10px, 9999px, 14px, 0); transform: skew(0.24deg); }
-  20% { clip: rect(58px, 9999px, 55px, 0); transform: skew(0.48deg); }
-  25% { clip: rect(10px, 9999px, 14px, 0); transform: skew(0.24deg); }
-  30% { clip: rect(90px, 9999px, 98px, 0); transform: skew(0.36deg); }
-  35% { clip: rect(70px, 9999px, 71px, 0); transform: skew(0.13deg); }
-  40% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
-  45% { clip: rect(58px, 9999px, 55px, 0); transform: skew(0.48deg); }
-  50% { clip: rect(10px, 9999px, 14px, 0); transform: skew(0.24deg); }
-  55% { clip: rect(90px, 9999px, 98px, 0); transform: skew(0.36deg); }
-  60% { clip: rect(70px, 9999px, 71px, 0); transform: skew(0.13deg); }
-  65% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
-  70% { clip: rect(58px, 9999px, 55px, 0); transform: skew(0.48deg); }
-  75% { clip: rect(10px, 9999px, 14px, 0); transform: skew(0.24deg); }
-  80% { clip: rect(90px, 9999px, 98px, 0); transform: skew(0.36deg); }
-  85% { clip: rect(70px, 9999px, 71px, 0); transform: skew(0.13deg); }
-  90% { clip: rect(31px, 9999px, 94px, 0); transform: skew(0.85deg); }
-  95% { clip: rect(58px, 9999px, 55px, 0); transform: skew(0.48deg); }
-  100% { clip: rect(10px, 9999px, 14px, 0); transform: skew(0.24deg); }
-}
-
-@keyframes glitch-anim2 {
-  0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.15deg); }
-  5% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.55deg); }
-  10% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.35deg); }
-  15% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.25deg); }
-  20% { clip: rect(67px, 9999px, 61px, 0); transform: skew(0.45deg); }
-  25% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.25deg); }
-  30% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.35deg); }
-  35% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.55deg); }
-  40% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.15deg); }
-  45% { clip: rect(67px, 9999px, 61px, 0); transform: skew(0.45deg); }
-  50% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.25deg); }
-  55% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.35deg); }
-  60% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.55deg); }
-  65% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.15deg); }
-  70% { clip: rect(67px, 9999px, 61px, 0); transform: skew(0.45deg); }
-  75% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.25deg); }
-  80% { clip: rect(79px, 9999px, 85px, 0); transform: skew(0.35deg); }
-  85% { clip: rect(52px, 9999px, 74px, 0); transform: skew(0.55deg); }
-  90% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.15deg); }
-  95% { clip: rect(67px, 9999px, 61px, 0); transform: skew(0.45deg); }
-  100% { clip: rect(75px, 9999px, 5px, 0); transform: skew(0.25deg); }
-}
-
+/* ── Scrollbar Utilities ── */
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar,
   .scrollbar-hide::-webkit-scrollbar {
