@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, X, ChevronDown, CheckCircle2, Shield, Sun, Eye, Layers, Lock, Sparkles, Send, ExternalLink, Globe } from 'lucide-react';
 import KoenigseggMenu from './KoenigseggMenu';
+import { FooterSeals } from './FooterSeals';
 
 interface LandingWinfSelectProps {
   onBack?: () => void;
@@ -1143,6 +1144,8 @@ onBack,
               <span className="text-zinc-500">LEGAL SECURITIES (INPI_DEED)</span>
             </div>
           </div>
+
+          <FooterSeals />
 
           <div className="text-[11px] text-zinc-500 leading-relaxed border-t border-white/5 pt-8">
             © 2026 WINF Partners™ | AeroCore™ Asset Ecosystem. Todos os direitos reservados. O uso não autorizado deste software ou de seus algoritmos conversacionais viola a Lei de Propriedade Industrial (Lei nº 9.279/96) e a Lei do Software (Lei nº 9.609/98).

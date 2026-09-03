@@ -1,4 +1,5 @@
 import React from "react";
+import { FooterSeals } from "./FooterSeals";
 
 interface WinfFooterProps {
   brandName?: string;
@@ -92,8 +93,11 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
           </p>
         </div>
 
-        {/* Copyright */}
-        <div className="text-center">
+        {/* Seals & Logo (small & subtle) */}
+        <div className="text-center space-y-5">
+          <FooterSeals />
+
+          {/* Copyright */}
           <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-zinc-700">
             © 2026 {brandName}. INTEGRANTE DO ECOSISTEMA WINF™. TODOS OS DIREITOS RESERVADOS.
           </p>
