@@ -7,6 +7,7 @@ import LandingAeroCore from './components/LandingAeroCore';
 import LandingNeoskin from './components/LandingNeoskin';
 import LandingCeramicArmoring from './components/LandingCeramicArmoring';
 import LandingInvisible from './components/LandingInvisible';
+import LandingMiniblindVenetian from './components/LandingMiniblindVenetian';
 import LandingDualReflect from './components/LandingDualReflect';
 import LandingBlackPro from './components/LandingBlackPro';
 import LandingSecurityBlind from './components/LandingSecurityBlind';
@@ -21,6 +22,7 @@ export type BrandPage =
   | 'neoskin'
   | 'ceramic'
   | 'invisible'
+  | 'miniblind-venetian'
   | 'dual-reflect'
   | 'blackpro'
   | 'securityblind'
@@ -100,6 +102,8 @@ export const App: React.FC = () => {
         setCurrentPage('ceramic');
       } else if (path === '/invisible' || path.startsWith('/invisible')) {
         setCurrentPage('invisible');
+      } else if (path === '/miniblind-venetian' || path.startsWith('/miniblind-venetian')) {
+        setCurrentPage('miniblind-venetian');
       } else if (path === '/dual-reflect' || path.startsWith('/dual-reflect')) {
         setCurrentPage('dual-reflect');
       } else if (path === '/blackpro' || path.startsWith('/blackpro')) {
@@ -144,6 +148,7 @@ export const App: React.FC = () => {
       'neoskin-apocalypse': '/neoskin/apocalypse',
       'ceramic': '/ceramic',
       'invisible': '/invisible',
+      'miniblind-venetian': '/miniblind-venetian',
       'dual-reflect': '/dual-reflect',
       'blackpro': '/blackpro',
       'securityblind': '/securityblind',
@@ -193,6 +198,7 @@ export const App: React.FC = () => {
         onNavigateToNeoskin={() => navigateTo('neoskin')}
         onNavigateToCeramic={() => navigateTo('ceramic')}
         onNavigateToInvisible={() => navigateTo('invisible')}
+        onNavigateToMiniblindVenetian={() => navigateTo('miniblind-venetian')}
         onNavigateToDualReflect={() => navigateTo('dual-reflect')}
         onNavigateToBlackPro={() => navigateTo('blackpro')}
         onNavigateToSecurityBlind={() => navigateTo('securityblind')}
@@ -305,6 +311,21 @@ export const App: React.FC = () => {
         <LandingInvisible
           onBack={() => navigateTo('winf-select')}
           onNavigateToWinf={() => navigateTo('winf-select')}
+          onNavigateToDualReflect={() => navigateTo('dual-reflect')}
+          onNavigateToBlackPro={() => navigateTo('blackpro')}
+          onNavigateToAeroCore={() => navigateTo('aerocore')}
+          onNavigateToNeoskin={() => navigateTo('neoskin')}
+          onNavigateToSecurityBlind={() => navigateTo('securityblind')}
+          onOpenMenu={handleOpenMenu}
+        />
+      )}
+
+      {/* ── Miniblind & Venetian ── */}
+      {currentPage === 'miniblind-venetian' && (
+        <LandingMiniblindVenetian
+          onBack={() => navigateTo('winf-select')}
+          onNavigateToWinf={() => navigateTo('winf-select')}
+          onNavigateToInvisible={() => navigateTo('invisible')}
           onNavigateToDualReflect={() => navigateTo('dual-reflect')}
           onNavigateToBlackPro={() => navigateTo('blackpro')}
           onNavigateToAeroCore={() => navigateTo('aerocore')}

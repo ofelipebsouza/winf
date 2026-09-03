@@ -10,6 +10,7 @@ export interface KoenigseggMenuProps {
   onNavigateToNeoskin?: () => void;
   onNavigateToCeramic?: () => void;
   onNavigateToInvisible?: () => void;
+  onNavigateToMiniblindVenetian?: () => void;
   onNavigateToDualReflect?: () => void;
   onNavigateToBlackPro?: () => void;
   onNavigateToSecurityBlind?: () => void;
@@ -27,6 +28,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
   onNavigateToNeoskin,
   onNavigateToCeramic,
   onNavigateToInvisible,
+  onNavigateToMiniblindVenetian,
   onNavigateToDualReflect,
   onNavigateToBlackPro,
   onNavigateToSecurityBlind,
@@ -155,6 +157,16 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   className="block text-left text-zinc-300 hover:text-cyan-300 transition-colors cursor-pointer text-sm sm:text-base font-mono"
                 >
                   Invisible™
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onNavigateToMiniblindVenetian) onNavigateToMiniblindVenetian();
+                    else handleScrollOrNav('miniblind-venetian');
+                  }}
+                  className="block text-left text-zinc-300 hover:text-teal-300 transition-colors cursor-pointer text-sm sm:text-base font-mono"
+                >
+                  Miniblind & Venetian™
                 </button>
                 <button
                   onClick={() => {
