@@ -57,6 +57,18 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
     return () => window.removeEventListener("keydown", h);
   }, []);
 
+  // Garante que todos os vídeos rodem em loop mesmo se o browser bloquear o autoplay inicial.
+  useEffect(() => {
+    const videos = Array.from(document.querySelectorAll("video"));
+    const kick = (v: HTMLVideoElement) => { v.muted = true; v.defaultMuted = true; if (v.paused) v.play().catch(() => {}); };
+    const kickAll = () => videos.forEach(kick);
+    const onCanPlay = (e: Event) => kick(e.currentTarget as HTMLVideoElement);
+    videos.forEach((v) => { kick(v); v.addEventListener("canplay", onCanPlay); });
+    const t = setTimeout(kickAll, 1500);
+    document.addEventListener("visibilitychange", kickAll);
+    return () => { clearTimeout(t); document.removeEventListener("visibilitychange", kickAll); videos.forEach((v) => v.removeEventListener("canplay", onCanPlay)); };
+  }, []);
+
   const handleOpenContact = (s?: string) => { if (s) setContactSubject(s); setIsContactModalOpen(true); };
   const handleDirectWhatsApp = (m?: string) => {
     window.open(`https://wa.me/5513997815375?text=${encodeURIComponent(m || "Olá! Gostaria de mais informações sobre WINF SELECT SECURITYBLINDERER™.")}`, "_blank");
@@ -75,9 +87,8 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       {/* 01 — HERO */}
       <section className="relative min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/aerocore-hero.png" src="/videos/2.mp4" className="w-full h-full object-cover object-center brightness-90 contrast-110 scale-105" />
+          <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-01.png" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-90 contrast-110 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-black/60" />
-          <div className="absolute inset-0 bg-red-500/10 mix-blend-overlay" />
         </div>
         <header className="w-full flex items-center justify-between z-30 relative">
           <div onClick={onBack} className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
@@ -177,7 +188,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       {/* 04 — ARSENAL.SECURITYBLINDER() */}
       <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/aerocore-hero.png" src="/videos/3.mp4" className="w-full h-full object-cover object-center brightness-50 contrast-125 scale-105" />
+          <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-03.png" src="/videos/securityblind/sbv-vandalism.mp4" className="w-full h-full object-cover object-center brightness-50 contrast-125 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         </div>
@@ -277,6 +288,35 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
         </div>
       </section>
 
+      {/* 06.5 — REGISTROS DE CAMPO (GALERIA) */}
+      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center flex flex-col items-center mb-16">
+            <motion.div {...fadeInUp} className="text-xs font-mono uppercase tracking-[0.35em] text-red-400 mb-6 font-semibold">SECURITYBLINDER // REGISTROS DE CAMPO</motion.div>
+            <motion.h2 {...fadeInUp} className="text-3xl sm:text-5xl md:text-6xl font-light italic tracking-tight text-white uppercase mb-6 max-w-4xl text-center">IMPACTO CONTIDO. ESTÉTICA PRESERVADA.</motion.h2>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {[
+              { src: "/images/securityblind/scene-01.png", cap: "RESIDENCIAL // VISTA LIVRE" },
+              { src: "/images/securityblind/scene-05.png", cap: "CORPORATIVO // DIVISÓRIA BLINDADA" },
+              { src: "/images/securityblind/scene-03.png", cap: "MACRO // RETENÇÃO DE ESTILHAÇOS" },
+              { src: "/images/securityblind/scene-06.png", cap: "RESIDENCIAL // PROTEÇÃO DA FAMÍLIA" },
+              { src: "/images/securityblind/scene-04.png", cap: "RESIDENCIAL // TRANSLUCIDEZ TOTAL" },
+              { src: "/images/securityblind/scene-07.png", cap: "CORPORATIVO // IMPACTO CONTIDO" },
+              { src: "/images/securityblind/scene-02.png", cap: "ARQUITETURA // FACHADA PRESERVADA" },
+              { src: "/images/securityblind/scene-08.png", cap: "HOSPITALIDADE // RECEPÇÃO PROTEGIDA" },
+            ].map((img, idx) => (
+              <motion.figure key={idx} {...fadeInUp} transition={{ duration: 0.8, delay: 0.05 * idx }} className="group relative overflow-hidden border border-white/10 hover:border-white/30 transition-colors">
+                <div className="aspect-[3/4] overflow-hidden">
+                  <img src={img.src} alt={img.cap} loading="lazy" className="w-full h-full object-cover saturate-[0.85] group-hover:saturate-100 group-hover:scale-105 transition-all duration-700" />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent px-3 pt-8 pb-3 text-[9px] sm:text-[10px] font-mono uppercase tracking-widest text-zinc-200 group-hover:text-white transition-colors">{img.cap}</figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 07 — DEFESA PERSONALIZADA */}
       <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-6xl mx-auto">
@@ -288,7 +328,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
               <div className="pt-4"><button onClick={() => handleOpenContact("Orçamento Personalizado Invisible")} className="px-8 py-4 rounded-none bg-white hover:bg-zinc-200 text-black font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl flex items-center gap-2"><span>SOLICITAR ORÇAMENTO</span><ChevronDown className="w-4 h-4 -rotate-90" /></button></div>
             </motion.div>
             <motion.div {...fadeInUp} transition={{ duration: 0.8, delay: 0.2 }} className="aspect-video rounded-none bg-zinc-950 border border-white/15 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-2xl">
-              <video autoPlay loop muted playsInline preload="auto" poster="/images/aerocore-hero.png" src="/videos/3.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700" />
+              <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-05.png" src="/videos/securityblind/sbv-vandalism-b.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 saturate-[0.8] group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
               <div className="relative z-10 flex flex-col items-center gap-3 p-6">
                 <ShieldCheck className="w-10 h-10 text-white group-hover:scale-110 transition-transform duration-500 drop-shadow" />
@@ -366,7 +406,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
 
       {/* 10 — CINEMATIC BANNER */}
       <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
-        <video autoPlay loop muted playsInline preload="auto" poster="/images/aerocore-hero.png" src="/videos/3.mp4" className="w-full h-full object-cover object-center brightness-75 scale-105" />
+        <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-07.png" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-75 saturate-[0.8] scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
       </section>
 
