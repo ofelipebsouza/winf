@@ -218,6 +218,7 @@ export const App: React.FC = () => {
           onNavigateToDualReflect={() => navigateTo('dual-reflect')}
           onNavigateToBlackPro={() => navigateTo('blackpro')}
           onNavigateToSecurityBlind={() => navigateTo('securityblind')}
+          onNavigateToMiniblindVenetian={() => navigateTo('miniblind-venetian')}
           onBack={() => navigateTo('winf-home')}
           onOpenMenu={handleOpenMenu}
         />
