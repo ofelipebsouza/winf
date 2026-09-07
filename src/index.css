@@ -4,6 +4,15 @@
    WINF OS™ // Global Design System
    ═══════════════════════════════════════════ */
 
+/* ── Font: JetBrains Mono (variable, self-hosted — latin) ── */
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-var.woff2') format('woff2-variations');
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ── Font: Gustavo (Primary) ── */
 @font-face {
   font-family: 'Gustavo';
@@ -169,4 +178,10 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.12) rgba(0, 0, 0, 0.25);
   }
+}
+
+/* Perf: skip rendering/painting of off-screen sections (LCP/TBT win on heavy pages) */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }

@@ -1,3 +1,6 @@
+import LazyVideo from './LazyVideo';
+import { PAGE_META, faqJsonLd } from '../data/siteMeta';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from "react";
 import WinfFooter from './WinfFooter';
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,6 +45,8 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
   onNavigateToAeroCore, onNavigateToNeoskin, onNavigateToCeramic,
   onOpenMenu,
 }) => {
+  usePageMeta({ ...PAGE_META.securityblind, jsonLd: [...(PAGE_META.securityblind.jsonLd ?? []), faqJsonLd(FAQ_ITEMS)] });
+
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("Especificação WINF SELECT SECURITYBLINDERER™");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -57,17 +62,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
     return () => window.removeEventListener("keydown", h);
   }, []);
 
-  // Garante que todos os vídeos rodem em loop mesmo se o browser bloquear o autoplay inicial.
-  useEffect(() => {
-    const videos = Array.from(document.querySelectorAll("video"));
-    const kick = (v: HTMLVideoElement) => { v.muted = true; v.defaultMuted = true; if (v.paused) v.play().catch(() => {}); };
-    const kickAll = () => videos.forEach(kick);
-    const onCanPlay = (e: Event) => kick(e.currentTarget as HTMLVideoElement);
-    videos.forEach((v) => { kick(v); v.addEventListener("canplay", onCanPlay); });
-    const t = setTimeout(kickAll, 1500);
-    document.addEventListener("visibilitychange", kickAll);
-    return () => { clearTimeout(t); document.removeEventListener("visibilitychange", kickAll); videos.forEach((v) => v.removeEventListener("canplay", onCanPlay)); };
-  }, []);
+  // Autoplay resilience now lives inside <LazyVideo> (plays/pauses by viewport).
 
   const handleOpenContact = (s?: string) => { if (s) setContactSubject(s); setIsContactModalOpen(true); };
   const handleDirectWhatsApp = (m?: string) => {
@@ -87,12 +82,12 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       {/* 01 — HERO */}
       <section className="relative min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-01.png" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-90 contrast-110 saturate-[0.75] scale-105" />
+          <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-01.webp" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-90 contrast-110 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-black/60" />
         </div>
         <header className="w-full flex items-center justify-between z-30 relative">
           <div onClick={onBack} className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
-            <img src="/winf-logo.svg" alt="WINF™" className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]" />
+            <img src="/winf-logo.svg" width={128} height={32} alt="WINF™" className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]" />
           </div>
           <button onClick={() => onOpenMenu?.()} className="group flex flex-col items-end justify-center gap-2 p-2.5 focus:outline-none cursor-pointer z-50 relative hover:opacity-80 transition-opacity" aria-label="Abrir Menu">
             <span className={`block h-[1.5px] bg-white transition-all duration-300 ease-out shadow-[0_1px_4px_rgba(0,0,0,0.8)] w-7 group-hover:w-8`} />
@@ -160,7 +155,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 03 — ENGENHARIA DE SEGURANÇA */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="text-center flex flex-col items-center mb-16">
             <motion.div {...fadeInUp} className="text-xs sm:text-sm font-mono uppercase tracking-[0.35em] text-red-400 mb-6 font-semibold">ENGENHARIA DE SEGURANÇA</motion.div>
@@ -186,9 +181,9 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 04 — ARSENAL.SECURITYBLINDER() */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-03.png" src="/videos/securityblind/sbv-vandalism.mp4" className="w-full h-full object-cover object-center brightness-50 contrast-125 saturate-[0.75] scale-105" />
+          <LazyVideo poster="/images/securityblind/scene-03.webp" src="/videos/securityblind/sbv-vandalism.mp4" className="w-full h-full object-cover object-center brightness-50 contrast-125 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         </div>
@@ -228,7 +223,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 05 — ARSENAL INDUSTRIAL */}
-      <section id="arsenal-securityblinder" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
+      <section id="arsenal-securityblinder" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center flex flex-col items-center mb-16">
             <motion.div {...fadeInUp} className="text-xs font-mono uppercase tracking-[0.35em] text-red-400 mb-6 font-semibold">ARSENAL INDUSTRIAL // SECURITYBLINDER</motion.div>
@@ -267,7 +262,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 06 — PELÍCULA DE PROTEÇÃO */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="text-center flex flex-col items-center mb-16">
             <motion.div {...fadeInUp} className="text-xs font-mono uppercase tracking-[0.35em] text-red-400 mb-6 font-semibold">SECURITYBLINDER // PELÍCULA DE SEGURANÇA</motion.div>
@@ -289,7 +284,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 06.5 — REGISTROS DE CAMPO (GALERIA) */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="text-center flex flex-col items-center mb-16">
             <motion.div {...fadeInUp} className="text-xs font-mono uppercase tracking-[0.35em] text-red-400 mb-6 font-semibold">SECURITYBLINDER // REGISTROS DE CAMPO</motion.div>
@@ -297,14 +292,14 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
           </div>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[
-              { src: "/images/securityblind/scene-01.png", cap: "RESIDENCIAL // VISTA LIVRE" },
-              { src: "/images/securityblind/scene-05.png", cap: "CORPORATIVO // DIVISÓRIA BLINDADA" },
-              { src: "/images/securityblind/scene-03.png", cap: "MACRO // RETENÇÃO DE ESTILHAÇOS" },
-              { src: "/images/securityblind/scene-06.png", cap: "RESIDENCIAL // PROTEÇÃO DA FAMÍLIA" },
-              { src: "/images/securityblind/scene-04.png", cap: "RESIDENCIAL // TRANSLUCIDEZ TOTAL" },
-              { src: "/images/securityblind/scene-07.png", cap: "CORPORATIVO // IMPACTO CONTIDO" },
-              { src: "/images/securityblind/scene-02.png", cap: "ARQUITETURA // FACHADA PRESERVADA" },
-              { src: "/images/securityblind/scene-08.png", cap: "HOSPITALIDADE // RECEPÇÃO PROTEGIDA" },
+              { src: "/images/securityblind/scene-01.webp", cap: "RESIDENCIAL // VISTA LIVRE" },
+              { src: "/images/securityblind/scene-05.webp", cap: "CORPORATIVO // DIVISÓRIA BLINDADA" },
+              { src: "/images/securityblind/scene-03.webp", cap: "MACRO // RETENÇÃO DE ESTILHAÇOS" },
+              { src: "/images/securityblind/scene-06.webp", cap: "RESIDENCIAL // PROTEÇÃO DA FAMÍLIA" },
+              { src: "/images/securityblind/scene-04.webp", cap: "RESIDENCIAL // TRANSLUCIDEZ TOTAL" },
+              { src: "/images/securityblind/scene-07.webp", cap: "CORPORATIVO // IMPACTO CONTIDO" },
+              { src: "/images/securityblind/scene-02.webp", cap: "ARQUITETURA // FACHADA PRESERVADA" },
+              { src: "/images/securityblind/scene-08.webp", cap: "HOSPITALIDADE // RECEPÇÃO PROTEGIDA" },
             ].map((img, idx) => (
               <motion.figure key={idx} {...fadeInUp} transition={{ duration: 0.8, delay: 0.05 * idx }} className="group relative overflow-hidden border border-white/10 hover:border-white/30 transition-colors">
                 <div className="aspect-[3/4] overflow-hidden">
@@ -318,7 +313,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 07 — DEFESA PERSONALIZADA */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-6xl mx-auto">
           <div className="p-8 sm:p-14 rounded-none bg-black/70 border border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center shadow-2xl">
             <motion.div {...fadeInUp} className="space-y-6">
@@ -328,7 +323,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
               <div className="pt-4"><button onClick={() => handleOpenContact("Orçamento Personalizado Invisible")} className="px-8 py-4 rounded-none bg-white hover:bg-zinc-200 text-black font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl flex items-center gap-2"><span>SOLICITAR ORÇAMENTO</span><ChevronDown className="w-4 h-4 -rotate-90" /></button></div>
             </motion.div>
             <motion.div {...fadeInUp} transition={{ duration: 0.8, delay: 0.2 }} className="aspect-video rounded-none bg-zinc-950 border border-white/15 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-2xl">
-              <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-05.png" src="/videos/securityblind/sbv-vandalism-b.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 saturate-[0.8] group-hover:scale-105 transition-transform duration-700" />
+              <LazyVideo poster="/images/securityblind/scene-05.webp" src="/videos/securityblind/sbv-vandalism-b.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 saturate-[0.8] group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
               <div className="relative z-10 flex flex-col items-center gap-3 p-6">
                 <ShieldCheck className="w-10 h-10 text-white group-hover:scale-110 transition-transform duration-500 drop-shadow" />
@@ -341,7 +336,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 08 — DATASHEET.SECURITYBLINDER() */}
-      <section id="datasheet-securityblinder" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="datasheet-securityblinder" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
             <div>
@@ -378,7 +373,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
                 </tbody>
               </table>
             </div>
-            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-500 uppercase tracking-widest bg-zinc-950/60">
+            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-950/60">
               <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /><span>TODOS OS TESTES HOMOLOGADOS EM CONFORMIDADE COM AS DIRETIVAS ASTM & ISO.</span></div>
               <div>ID: SB-BLK-REV2026</div>
             </div>
@@ -387,14 +382,14 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 09 — DÚVIDAS TÁTICAS (FAQ) */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-4xl mx-auto">
           <motion.div {...fadeInUp} className="text-center mb-16"><h2 className="text-2xl sm:text-4xl font-light tracking-[0.3em] uppercase text-zinc-200">D Ú V I D A S   T Á T I C A S</h2></motion.div>
           <div className="space-y-4">
             {FAQ_ITEMS.map((faq) => {
               const isOpen = openFaq === faq.id;
               return (<motion.div key={faq.id} {...fadeInUp} className="border-b border-white/15 pb-4">
-                <button onClick={() => toggleFaq(faq.id)} className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group">
+                <button onClick={() => toggleFaq(faq.id)} aria-expanded={isOpen} className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group">
                   <span>{faq.question}</span><ChevronDown className={`w-4 h-4 text-zinc-400 group-hover:text-white transition-transform duration-300 ${isOpen ? "rotate-180 text-white" : ""}`} />
                 </button>
                 <AnimatePresence>{isOpen && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden"><p className="text-xs sm:text-sm font-light text-zinc-400 leading-relaxed pt-2 pb-4">{faq.answer}</p></motion.div>)}</AnimatePresence>
@@ -405,13 +400,13 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       </section>
 
       {/* 10 — CINEMATIC BANNER */}
-      <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
-        <video autoPlay loop muted playsInline preload="auto" poster="/images/securityblind/scene-07.png" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-75 saturate-[0.8] scale-105" />
+      <section className="cv-auto relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
+        <LazyVideo poster="/images/securityblind/scene-07.webp" src="/videos/securityblind/sbv-impact.mp4" className="w-full h-full object-cover object-center brightness-75 saturate-[0.8] scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
       </section>
 
       {/* 11 — PROTOCOLO DE CONTATO */}
-      <section id="contato" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="contato" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-3xl mx-auto">
           <motion.div {...fadeInUp} className="text-center mb-16">
             <span className="text-xs font-mono uppercase tracking-[0.35em] text-white block mb-3 font-semibold">PROTOCOLO DE CONTATO // CANAL SEGURO</span>
@@ -426,12 +421,12 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
           ) : (
             <motion.form {...fadeInUp} onSubmit={handleInlineContactSubmit} className="space-y-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
-                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">IDENTIFICAÇÃO</span><input type="text" required placeholder="NOME COMPLETO" value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
-                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">SINAL PROFISSIONAL</span><input type="text" required placeholder="E-MAIL OU WHATSAPP" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
+                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">IDENTIFICAÇÃO</span><input type="text" required placeholder="NOME COMPLETO" value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
+                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">SINAL PROFISSIONAL</span><input type="text" required placeholder="E-MAIL OU WHATSAPP" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">ESCOPO DO PROJETO</span>
-                <select value={formInterest} onChange={(e) => setFormInterest(e.target.value)} className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-white outline-none cursor-pointer rounded-none">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">ESCOPO DO PROJETO</span>
+                <select aria-label="Área de interesse" value={formInterest} onChange={(e) => setFormInterest(e.target.value)} className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-white outline-none cursor-pointer rounded-none">
                   <option value="SENTINEL">SENTINEL</option><option value="FORTRESS">FORTRESS</option><option value="BLACKOUT">BLACKOUT</option><option value="PROJETO ESPECIAL">PROJETO ESPECIAL</option>
                 </select>
               </div>

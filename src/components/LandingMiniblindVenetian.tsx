@@ -1,6 +1,9 @@
+import { PAGE_META, faqJsonLd } from '../data/siteMeta';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from "react";
 import WinfFooter from './WinfFooter';
 import { motion, AnimatePresence } from "framer-motion";
+import LazyVideo from './LazyVideo';
 import {
   Eye, Zap, Sun, Sparkles, Shield, Thermometer, Activity,
   ArrowRight, X, Send, ChevronDown, CheckCircle2, Check,
@@ -45,6 +48,8 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
   onNavigateToAeroCore, onNavigateToNeoskin, onNavigateToCeramic, onNavigateToSecurityBlind,
   onOpenMenu,
 }) => {
+  usePageMeta({ ...PAGE_META['miniblind-venetian'], jsonLd: [...(PAGE_META['miniblind-venetian'].jsonLd ?? []), faqJsonLd(FAQ_ITEMS)] });
+
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("Especificação WINF MINIBLIND & VENETIAN™");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -78,13 +83,13 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       {/* 01 — HERO */}
       <section className="relative min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/miniblind-venetian/scene-01.png" src="/videos/mbv-figures.mp4" className="w-full h-full object-cover object-center brightness-[0.65] contrast-110 saturate-[0.75] scale-105" />
+          <video autoPlay loop muted playsInline preload="auto" poster="/images/miniblind-venetian/scene-01.webp" src="/videos/mbv-figures.mp4" className="w-full h-full object-cover object-center brightness-[0.65] contrast-110 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-black/40" />
           <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/15 to-black/35" />
         </div>
         <header className="w-full flex items-center justify-between z-30 relative">
           <div onClick={onBack} className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}>
-            <img src="/winf-logo.svg" alt="WINF™" className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]" />
+            <img src="/winf-logo.svg" width={128} height={32} alt="WINF™" className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]" />
           </div>
           <button onClick={() => onOpenMenu?.()} className="group flex flex-col items-end justify-center gap-2 p-2.5 focus:outline-none cursor-pointer z-50 relative hover:opacity-80 transition-opacity" aria-label="Abrir Menu">
             <span className={`block h-[1.5px] bg-white transition-all duration-300 ease-out shadow-[0_1px_4px_rgba(0,0,0,0.8)] w-7 group-hover:w-8`} />
@@ -93,7 +98,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
         </header>
         <div className="flex-1 flex flex-col items-center justify-center my-auto px-4 z-20 text-center w-full">
           <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col items-center">
-            <img src="/images/miniblind-venetian/minibrind-venetian-logo.svg" alt="MINIBLIND & VENETIAN™" className="w-64 sm:w-80 md:w-[480px] lg:w-[560px] h-auto drop-shadow-[0_4px_40px_rgba(255,255,255,0.15)]" />
+            <img src="/images/miniblind-venetian/minibrind-venetian-logo.svg" width={160} height={48} alt="MINIBLIND & VENETIAN™" className="w-64 sm:w-80 md:w-[480px] lg:w-[560px] h-auto drop-shadow-[0_4px_40px_rgba(255,255,255,0.15)]" />
             <motion.p initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.2 }} className="mt-6 sm:mt-8 text-[10px] sm:text-xs md:text-sm font-mono tracking-[0.25em] sm:tracking-[0.35em] text-zinc-300 uppercase drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] max-w-2xl leading-relaxed">
               APARÊNCIA SOFISTICADA DE PERSIANA. DIRETO NO VIDRO.
             </motion.p>
@@ -182,7 +187,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
       {/* 04 — ARSENAL.MINIBLIND() */}
       <section id="arsenal-miniblind" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <video autoPlay loop muted playsInline preload="auto" poster="/images/miniblind-venetian/scene-02.png" src="/videos/mbv-professionals.mp4" className="w-full h-full object-cover object-center brightness-[0.28] contrast-125 saturate-[0.75] scale-105" />
+          <LazyVideo poster="/images/miniblind-venetian/scene-02.webp" src="/videos/mbv-professionals.mp4" className="w-full h-full object-cover object-center brightness-[0.28] contrast-125 saturate-[0.75] scale-105" />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         </div>
@@ -293,10 +298,10 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {[
-              { src: "/images/miniblind-venetian/scene-01.png", caption: "CORPORATIVO // SALA DE REUNIÃO" },
-              { src: "/images/miniblind-venetian/scene-02.png", caption: "DIVISÓRIA // LISTRAS HORIZONTAIS" },
-              { src: "/images/miniblind-venetian/scene-03.png", caption: "RESIDENCIAL // SALA DE ESTAR" },
-              { src: "/images/miniblind-venetian/scene-05.png", caption: "ESCRITÓRIO // CIRCULAÇÃO" },
+              { src: "/images/miniblind-venetian/scene-01.webp", caption: "CORPORATIVO // SALA DE REUNIÃO" },
+              { src: "/images/miniblind-venetian/scene-02.webp", caption: "DIVISÓRIA // LISTRAS HORIZONTAIS" },
+              { src: "/images/miniblind-venetian/scene-03.webp", caption: "RESIDENCIAL // SALA DE ESTAR" },
+              { src: "/images/miniblind-venetian/scene-05.webp", caption: "ESCRITÓRIO // CIRCULAÇÃO" },
             ].map((item, idx) => (
               <motion.div key={idx} {...fadeInUp} transition={{ duration: 0.8, delay: 0.1 * (idx + 1) }} className="relative overflow-hidden rounded-none border border-white/10 group aspect-[3/4] shadow-2xl">
                 <img src={item.src} alt="MINIBLIND & VENETIAN™" className="absolute inset-0 w-full h-full object-cover saturate-[0.7] group-hover:saturate-100 group-hover:scale-105 transition-all duration-700" />
@@ -319,7 +324,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
               <div className="pt-4"><button onClick={() => handleOpenContact("Orçamento Personalizado Miniblind & Venetian")} className="px-8 py-4 rounded-none bg-white hover:bg-zinc-200 text-black font-bold text-xs font-mono uppercase tracking-[0.2em] transition-all cursor-pointer shadow-xl flex items-center gap-2"><span>SOLICITAR ORÇAMENTO</span><ChevronDown className="w-4 h-4 -rotate-90" /></button></div>
             </motion.div>
             <motion.div {...fadeInUp} transition={{ duration: 0.8, delay: 0.2 }} className="aspect-video rounded-none bg-zinc-950 border border-white/15 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-2xl">
-              <video autoPlay loop muted playsInline preload="auto" poster="/images/miniblind-venetian/scene-03.png" src="/videos/mbv-office.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700" />
+              <LazyVideo poster="/images/miniblind-venetian/scene-03.webp" src="/videos/mbv-office.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
               <div className="relative z-10 flex flex-col items-center gap-3 p-6">
                 <Blinds className="w-10 h-10 text-white group-hover:scale-110 transition-transform duration-500 drop-shadow" />
@@ -367,7 +372,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
                 </tbody>
               </table>
             </div>
-            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-500 uppercase tracking-widest bg-zinc-950/60">
+            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-950/60">
               <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-white animate-pulse" /><span>TODOS OS TESTES HOMOLOGADOS EM CONFORMIDADE COM AS DIRETIVAS ASTM & ISO.</span></div>
               <div>ID: MBV-SPEC-REV2026</div>
             </div>
@@ -383,7 +388,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
             {FAQ_ITEMS.map((faq) => {
               const isOpen = openFaq === faq.id;
               return (<motion.div key={faq.id} {...fadeInUp} className="border-b border-white/15 pb-4">
-                <button onClick={() => toggleFaq(faq.id)} className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group">
+                <button onClick={() => toggleFaq(faq.id)} aria-expanded={isOpen} className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group">
                   <span>{faq.question}</span><ChevronDown className={`w-4 h-4 text-zinc-400 group-hover:text-white transition-transform duration-300 ${isOpen ? "rotate-180 text-white" : ""}`} />
                 </button>
                 <AnimatePresence>{isOpen && (<motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="overflow-hidden"><p className="text-xs sm:text-sm font-light text-zinc-400 leading-relaxed pt-2 pb-4">{faq.answer}</p></motion.div>)}</AnimatePresence>
@@ -395,7 +400,7 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
 
       {/* 10 — CINEMATIC BANNER */}
       <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
-        <img src="/images/miniblind-venetian/scene-04.png" alt="MINIBLIND & VENETIAN™" className="w-full h-full object-cover object-center brightness-75 saturate-[0.8] scale-105" />
+        <img src="/images/miniblind-venetian/scene-04.webp" alt="MINIBLIND & VENETIAN™" className="w-full h-full object-cover object-center brightness-75 saturate-[0.8] scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
       </section>
 
@@ -415,12 +420,12 @@ onBack, onNavigateToWinf, onNavigateToInvisible, onNavigateToDualReflect, onNavi
           ) : (
             <motion.form {...fadeInUp} onSubmit={handleInlineContactSubmit} className="space-y-10">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
-                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">IDENTIFICAÇÃO</span><input type="text" required placeholder="NOME COMPLETO" value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
-                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">SINAL PROFISSIONAL</span><input type="text" required placeholder="E-MAIL OU WHATSAPP" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
+                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">IDENTIFICAÇÃO</span><input type="text" required placeholder="NOME COMPLETO" value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
+                <div><span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">SINAL PROFISSIONAL</span><input type="text" required placeholder="E-MAIL OU WHATSAPP" value={formEmail} onChange={(e) => setFormEmail(e.target.value)} className="w-full pb-3 bg-transparent border-b border-white/20 text-white placeholder-zinc-600 text-xs font-mono uppercase tracking-wider focus:border-white outline-none transition-colors rounded-none" /></div>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">ESCOPO DO PROJETO</span>
-                <select value={formInterest} onChange={(e) => setFormInterest(e.target.value)} className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-white outline-none cursor-pointer rounded-none">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">ESCOPO DO PROJETO</span>
+                <select aria-label="Área de interesse" value={formInterest} onChange={(e) => setFormInterest(e.target.value)} className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-white outline-none cursor-pointer rounded-none">
                   <option value="MINIBLIND 1.0">MINIBLIND 1.0 (LISTRA 1,0CM)</option><option value="VENETIAN 0.5">VENETIAN 0.5 (LISTRA 0,5CM)</option><option value="PROJETO ESPECIAL">PROJETO ESPECIAL</option>
                 </select>
               </div>

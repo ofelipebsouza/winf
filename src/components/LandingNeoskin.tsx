@@ -1,3 +1,6 @@
+import { PAGE_META, faqJsonLd } from '../data/siteMeta';
+import LazyVideo from './LazyVideo';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import KoenigseggMenu from "./KoenigseggMenu";
@@ -127,6 +130,8 @@ onBack,
   onNavigateToApocalypse,
   onOpenMenu,
 }) => {
+  usePageMeta({ ...PAGE_META.neoskin, jsonLd: [...(PAGE_META.neoskin.jsonLd ?? []), faqJsonLd(FAQ_ITEMS)] });
+
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("Orçamento Tático NeoSkin™ PPF");
   const [activeTab, setActiveTab] = useState<string>("bunker");
@@ -200,7 +205,7 @@ onBack,
             muted
             playsInline
             preload="auto"
-            poster="/images/neoskin-hero.png"
+            poster="/images/neoskin-hero.webp"
             src="/videos/2.mp4"
             className="w-full h-full object-cover object-center brightness-90 contrast-110 scale-105"
           />
@@ -216,7 +221,7 @@ onBack,
             className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
           >
             <img 
-              src="/winf-logo.svg" 
+              src="/winf-logo.svg" width={128} height={32} 
               alt="WINF™" 
               className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
             />
@@ -420,16 +425,7 @@ onBack,
       <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 overflow-hidden">
         {/* Background Video / Jungle Porsche */}
         <div className="absolute inset-0 z-0">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster="/images/neoskin-hero.png"
-            src="/videos/3.mp4"
-            className="w-full h-full object-cover object-center brightness-50 contrast-125 scale-105"
-          />
+          <LazyVideo poster="/images/neoskin-hero.webp" src="/videos/3.mp4" className="w-full h-full object-cover object-center brightness-50 contrast-125 scale-105" />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         </div>
@@ -538,7 +534,7 @@ onBack,
       </section>
 
       {/* 03 — ARSENAL INDUSTRIAL // PROTEÇÃO MULTIFUNCIONAL */}
-      <section id="arsenal" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+      <section id="arsenal" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
         <div className="max-w-6xl mx-auto">
           {/* Centered Section Header */}
           <div className="text-center flex flex-col items-center mb-16">
@@ -698,7 +694,7 @@ onBack,
       </section>
 
       {/* 04 — NEOSKIN // PELÍCULA DE PROTEÇÃO */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           {/* Centered Section Header */}
           <div className="text-center flex flex-col items-center mb-16">
@@ -801,7 +797,7 @@ onBack,
       </section>
 
       {/* 05 — DEFESA PERSONALIZADA */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
         <div className="max-w-6xl mx-auto">
           <div className="p-8 sm:p-14 rounded-none bg-black/70 border border-white/10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center shadow-2xl">
             {/* Left Content */}
@@ -832,16 +828,7 @@ onBack,
               transition={{ duration: 0.8, delay: 0.2 }}
               className="aspect-video sm:aspect-square lg:aspect-video rounded-none bg-zinc-950 border border-white/15 flex flex-col items-center justify-center text-center relative overflow-hidden group shadow-2xl"
             >
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                poster="/images/neoskin-hero.png"
-                src="/videos/3.mp4"
-                className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700"
-              />
+              <LazyVideo poster="/images/neoskin-hero.webp" src="/videos/3.mp4" className="absolute inset-0 w-full h-full object-cover brightness-75 group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/50" />
               <div className="relative z-10 flex flex-col items-center gap-3 p-6">
                 <ShieldCheck className="w-10 h-10 text-[#7A9856] group-hover:scale-110 transition-transform duration-500 drop-shadow" />
@@ -858,7 +845,7 @@ onBack,
       </section>
 
       {/* 06 — DATASHEET.NEOSKIN() // ESPECIFICAÇÕES TÉCNICAS DETALHADAS */}
-      <section id="datasheet" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="datasheet" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           {/* Header & Tabs */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
@@ -875,7 +862,7 @@ onBack,
               >
                 <span className="text-[#647C4A] block">ESPECIFICAÇÕES</span>
                 <span className="text-zinc-300 block">TÉCNICAS</span>
-                <span className="text-zinc-500 block">DETALHADAS</span>
+                <span className="text-zinc-400 block">DETALHADAS</span>
               </motion.h2>
             </div>
 
@@ -954,7 +941,7 @@ onBack,
             </div>
 
             {/* Table Footer */}
-            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-500 uppercase tracking-widest bg-zinc-950/60">
+            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-950/60">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#7A9856] animate-pulse" />
                 <span>TODOS OS TESTES HOMOLOGADOS EM CONFORMIDADE COM AS DIRETIVAS MILITARES ASTM & ISO.</span>
@@ -966,7 +953,7 @@ onBack,
       </section>
 
       {/* 07 — DÚVIDAS TÁTICAS (FAQ) */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#070806]">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <motion.div {...fadeInUp} className="text-center mb-16">
@@ -987,6 +974,7 @@ onBack,
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
                     className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group"
                   >
                     <span>{faq.question}</span>
@@ -1020,23 +1008,14 @@ onBack,
       </section>
 
       {/* 08 — CINEMATIC CAR SCENE BANNER */}
-      <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/images/neoskin-hero.png"
-          src="/videos/2.mp4"
-          className="w-full h-full object-cover object-center brightness-75 scale-105"
-        />
+      <section className="cv-auto relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
+        <LazyVideo poster="/images/neoskin-hero.webp" src="/videos/2.mp4" className="w-full h-full object-cover object-center brightness-75 scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/60" />
       </section>
 
       {/* 09 — PROTOCOLO DE CONTATO // CANAL SEGURO */}
-      <section id="contato" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="contato" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-3xl mx-auto">
           <motion.div {...fadeInUp} className="text-center mb-16">
             <span className="text-xs font-mono uppercase tracking-[0.35em] text-[#647C4A] block mb-3 font-semibold">
@@ -1073,7 +1052,7 @@ onBack,
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     IDENTIFICAÇÃO
                   </span>
                   <input
@@ -1087,7 +1066,7 @@ onBack,
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     SINAL PROFISSIONAL
                   </span>
                   <input
@@ -1102,10 +1081,10 @@ onBack,
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                   ESCOPO DO PROJETO
                 </span>
-                <select
+                <select aria-label="Área de interesse"
                   value={formInterest}
                   onChange={(e) => setFormInterest(e.target.value)}
                   className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-[#7A9856] outline-none cursor-pointer rounded-none"
@@ -1217,7 +1196,7 @@ onBack,
 
                     <div>
                       <label className="text-xs font-mono text-zinc-300 block mb-1">Interesse *</label>
-                      <select
+                      <select aria-label="Área de interesse"
                         value={formInterest}
                         onChange={(e) => setFormInterest(e.target.value)}
                         className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-xs text-white focus:border-[#7A9856] outline-none"

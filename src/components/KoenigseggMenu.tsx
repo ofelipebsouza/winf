@@ -15,6 +15,7 @@ export interface KoenigseggMenuProps {
   onNavigateToBlackPro?: () => void;
   onNavigateToSecurityBlind?: () => void;
   onNavigateToShop?: () => void;
+  onNavigateToBlog?: () => void;
   onNavigateToHome?: () => void;
   onOpenContact?: (subject?: string) => void;
   onScrollToSection?: (sectionId: string) => void;
@@ -33,6 +34,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
   onNavigateToBlackPro,
   onNavigateToSecurityBlind,
   onNavigateToShop,
+  onNavigateToBlog,
   onNavigateToHome,
   onOpenContact,
   onScrollToSection
@@ -145,7 +147,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
               
               {/* Column 1: Specific Lines */}
               <div className="space-y-4">
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-500 block mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-400 block mb-2">
                   // WINF SELECT™
                 </span>
                 <button
@@ -205,7 +207,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   }}
                   className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base font-mono font-bold tracking-wider"
                 >
-                  🛒 BLACKSHOP™
+                  BlackShop™
                 </button>
 
                 <button
@@ -239,7 +241,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
 
               {/* Column 2: Direct Services & Concierge */}
               <div className="space-y-4">
-                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-500 block mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-400 block mb-2">
                   // SERVICES
                 </span>
                 <button
@@ -274,6 +276,15 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                 <button
                   onClick={() => {
                     onClose();
+                    if (onNavigateToBlog) onNavigateToBlog();
+                  }}
+                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base"
+                >
+                  Blog
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
                     if (onOpenContact) onOpenContact('Contact');
                     else window.open('https://wa.me/5513997815375?text=Olá,%20gostaria%20de%20atendimento%20oficial%20WINF.', '_blank');
                   }}
@@ -288,11 +299,11 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
           </div>
 
           {/* Bottom empty spacing or subtle note */}
-          <div className="w-full flex justify-between items-center text-xs font-mono text-zinc-600 pt-4">
+          <div className="w-full flex justify-between items-center text-xs font-mono text-zinc-400 pt-4">
             <span>WINF SELECT™ & AEROCORE™ // ECOSYSTEM</span>
             <button 
               onClick={() => { onClose(); if (onNavigateToHome) onNavigateToHome(); }}
-              className="text-zinc-500 hover:text-zinc-300 transition-colors uppercase text-[10px] hidden sm:inline"
+              className="text-zinc-400 hover:text-zinc-300 transition-colors uppercase text-[10px] hidden sm:inline"
             >
               PORTAL GLOBAL WINF-HOME →
             </button>

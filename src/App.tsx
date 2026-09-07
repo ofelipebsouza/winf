@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Lenis from 'lenis';
 import { KoenigseggMenu } from './components/KoenigseggMenu';
-import LandingWinfHome from './components/LandingWinfHome';
-import LandingWinfSelect from './components/LandingWinfSelect';
-import LandingAeroCore from './components/LandingAeroCore';
-import LandingNeoskin from './components/LandingNeoskin';
-import LandingCeramicArmoring from './components/LandingCeramicArmoring';
-import LandingInvisible from './components/LandingInvisible';
-import LandingMiniblindVenetian from './components/LandingMiniblindVenetian';
-import LandingDualReflect from './components/LandingDualReflect';
-import LandingBlackPro from './components/LandingBlackPro';
-import LandingSecurityBlind from './components/LandingSecurityBlind';
-import AeroCoreCatalog from './components/AeroCoreCatalog';
-import NeoSkinCatalog from './components/NeoSkinCatalog';
-import LandingShop from './components/LandingShop';
+const LandingWinfHome = React.lazy(() => import('./components/LandingWinfHome'));
+const LandingWinfSelect = React.lazy(() => import('./components/LandingWinfSelect'));
+const LandingAeroCore = React.lazy(() => import('./components/LandingAeroCore'));
+const LandingNeoskin = React.lazy(() => import('./components/LandingNeoskin'));
+const LandingCeramicArmoring = React.lazy(() => import('./components/LandingCeramicArmoring'));
+const LandingInvisible = React.lazy(() => import('./components/LandingInvisible'));
+const LandingMiniblindVenetian = React.lazy(() => import('./components/LandingMiniblindVenetian'));
+const LandingDualReflect = React.lazy(() => import('./components/LandingDualReflect'));
+const LandingBlackPro = React.lazy(() => import('./components/LandingBlackPro'));
+const LandingSecurityBlind = React.lazy(() => import('./components/LandingSecurityBlind'));
+const AeroCoreCatalog = React.lazy(() => import('./components/AeroCoreCatalog'));
+const NeoSkinCatalog = React.lazy(() => import('./components/NeoSkinCatalog'));
+const LandingShop = React.lazy(() => import('./components/LandingShop'));
+const LandingBlog = React.lazy(() => import('./components/LandingBlog'));
+import CookieBanner from './components/CookieBanner';
 
 export type BrandPage =
   | 'winf-select'
@@ -32,6 +34,7 @@ export type BrandPage =
   | 'aerocore-wraith'
   | 'neoskin-bunker'
   | 'neoskin-apocalypse'
+  | 'blog'
   | 'shop';
 
 type AeroCoreProduct = 'ghost' | 'phantom' | 'spectre' | 'wraith';
@@ -40,6 +43,7 @@ type NeoSkinProduct = 'bunker' | 'apocalypse';
 export const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<BrandPage>('winf-select');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [blogSlug, setBlogSlug] = useState<string | null>(null);
   const [aerocoreProduct, setAerocoreProduct] = useState<AeroCoreProduct>('ghost');
   const [neoskinProduct, setNeoskinProduct] = useState<NeoSkinProduct>('bunker');
 
@@ -110,6 +114,8 @@ export const App: React.FC = () => {
         setCurrentPage('blackpro');
       } else if (path === '/securityblind' || path.startsWith('/securityblind')) {
         setCurrentPage('securityblind');
+      } else if (path === '/blog' || path.startsWith('/blog')) {
+        setCurrentPage('blog');
       } else if (path === '/shop') {
         setCurrentPage('shop');
       } else if (path === '/winf-home') {
@@ -152,6 +158,7 @@ export const App: React.FC = () => {
       'dual-reflect': '/dual-reflect',
       'blackpro': '/blackpro',
       'securityblind': '/securityblind',
+      'blog': '/blog',
       'shop': '/shop',
     };
     window.history.pushState({}, '', pathMap[page]);
@@ -188,7 +195,7 @@ export const App: React.FC = () => {
   const handleOpenMenu = () => setIsMenuOpen(true);
 
   return (
-    <main className="w-full min-h-screen bg-black text-white">
+    <main id="conteudo" className="w-full min-h-screen bg-black text-white">
       {/* ── Global KoenigseggMenu (shared across ALL pages) ── */}
       <KoenigseggMenu
         isOpen={isMenuOpen}
@@ -203,10 +210,13 @@ export const App: React.FC = () => {
         onNavigateToBlackPro={() => navigateTo('blackpro')}
         onNavigateToSecurityBlind={() => navigateTo('securityblind')}
         onNavigateToShop={() => navigateTo('shop')}
+        onNavigateToBlog={() => { setBlogSlug(null); navigateTo('blog'); }}
         onNavigateToHome={() => navigateTo('winf-select')}
         onOpenContact={() => {}}
         onScrollToSection={scrollToSection}
       />
+
+      <Suspense fallback={<div className="min-h-screen bg-black" />}>
 
       {/* ── Root page: WINF SELECT ── */}
       {currentPage === 'winf-select' && (
@@ -219,7 +229,17 @@ export const App: React.FC = () => {
           onNavigateToBlackPro={() => navigateTo('blackpro')}
           onNavigateToSecurityBlind={() => navigateTo('securityblind')}
           onNavigateToMiniblindVenetian={() => navigateTo('miniblind-venetian')}
+          onNavigateToBlog={(slug) => { setBlogSlug(slug ?? null); navigateTo('blog'); }}
           onBack={() => navigateTo('winf-home')}
+          onOpenMenu={handleOpenMenu}
+        />
+      )}
+
+      {/* ── WINF Journal (blog) ── */}
+      {currentPage === 'blog' && (
+        <LandingBlog
+          initialSlug={blogSlug}
+          onBack={() => navigateTo('winf-select')}
           onOpenMenu={handleOpenMenu}
         />
       )}
@@ -369,6 +389,11 @@ export const App: React.FC = () => {
           onOpenMenu={handleOpenMenu}
         />
       )}
+
+      </Suspense>
+
+      {/* ── Cookie consent banner (global, Koenigsegg-style) ── */}
+      <CookieBanner />
     </main>
   );
 };

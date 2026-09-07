@@ -1,4 +1,6 @@
 import React from "react";
+import { PAGE_META, productJsonLd } from "../data/siteMeta";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 
@@ -16,11 +18,11 @@ const productData = {
     description: "PELÍCULA ESSENCIAL DE ENTRADA SUPERIOR AO MERCADO. PROTEÇÃO SOLAR EQUILIBRADA COM CLAREZA ÓPTICA IMPECÁVEL.",
     specs: ["IR 58%", "UV 99%", "3 ANOS"],
     images: [
-      { src: "/images/aerocore-catalog/ghost-05.png", label: "GHOST 05%" },
-      { src: "/images/aerocore-catalog/ghost-15.png", label: "GHOST 15%" },
-      { src: "/images/aerocore-catalog/ghost-35.png", label: "GHOST 35%" },
+      { src: "/images/aerocore-catalog/ghost-05.webp", label: "GHOST 05%" },
+      { src: "/images/aerocore-catalog/ghost-15.webp", label: "GHOST 15%" },
+      { src: "/images/aerocore-catalog/ghost-35.webp", label: "GHOST 35%" },
     ],
-    banner: "/images/aerocore-catalog/banner-aerocore.png",
+    banner: "/images/aerocore-catalog/banner-aerocore.webp",
   },
   phantom: {
     name: "PHANTOM",
@@ -29,11 +31,11 @@ const productData = {
     description: "FUSÃO DE CARBONO ESTRUTURAL PARA REJEIÇÃO TÉRMICA AVANÇADA E ESTÉTICA MATTE PROFUNDA.",
     specs: ["IR 73%", "UV 99%", "10 ANOS"],
     images: [
-      { src: "/images/aerocore-catalog/phantom-05.png", label: "PHANTOM 05%" },
-      { src: "/images/aerocore-catalog/phantom-15.png", label: "PHANTOM 15%" },
-      { src: "/images/aerocore-catalog/phantom-35.png", label: "PHANTOM 35%" },
+      { src: "/images/aerocore-catalog/phantom-05.webp", label: "PHANTOM 05%" },
+      { src: "/images/aerocore-catalog/phantom-15.webp", label: "PHANTOM 15%" },
+      { src: "/images/aerocore-catalog/phantom-35.webp", label: "PHANTOM 35%" },
     ],
-    banner: "/images/aerocore-catalog/banner-aerocore.png",
+    banner: "/images/aerocore-catalog/banner-aerocore.webp",
   },
   spectre: {
     name: "SPECTRE",
@@ -42,11 +44,11 @@ const productData = {
     description: "O ÁPICE DA TECNOLOGIA NANO-CERÂMICA. BLOQUEIO INFRAVERMELHO DE 95% PARA O MÁXIMO CONFORTO TÉRMICO.",
     specs: ["IR 95%", "UV 99%", "10 ANOS"],
     images: [
-      { src: "/images/aerocore-catalog/spectre-05.png", label: "SPECTRE 05%" },
-      { src: "/images/aerocore-catalog/spectre-15.png", label: "SPECTRE 15%" },
-      { src: "/images/aerocore-catalog/spectre-35.png", label: "SPECTRE 35%" },
+      { src: "/images/aerocore-catalog/spectre-05.webp", label: "SPECTRE 05%" },
+      { src: "/images/aerocore-catalog/spectre-15.webp", label: "SPECTRE 15%" },
+      { src: "/images/aerocore-catalog/spectre-35.webp", label: "SPECTRE 35%" },
     ],
-    banner: "/images/aerocore-catalog/banner-aerocore.png",
+    banner: "/images/aerocore-catalog/banner-aerocore.webp",
   },
   wraith: {
     name: "WRAITH",
@@ -55,9 +57,9 @@ const productData = {
     description: "BLINDAGEM TÉRMICA INVISÍVEL DE 70% VLT. MÁXIMA PROTEÇÃO SEM ALTERAR A TRANSPARÊNCIA ORIGINAL.",
     specs: ["IR 98%", "UV 99%", "10 ANOS"],
     images: [
-      { src: "/images/aerocore-catalog/wraith-70.png", label: "WRAITH 70%" },
+      { src: "/images/aerocore-catalog/wraith-70.webp", label: "WRAITH 70%" },
     ],
-    banner: "/images/aerocore-catalog/banner-aerocore.png",
+    banner: "/images/aerocore-catalog/banner-aerocore.webp",
   },
 };
 
@@ -66,7 +68,22 @@ const fadeInUp = {
   animate: { opacity: 1, y: 0 },
 };
 
+const PRODUCT_META: Record<string, { title: string; description: string }> = {
+  ghost: { title: "AeroCore Ghost™ — Película Automotiva HP Series | WINF™", description: "AeroCore Ghost™ da linha HP Series: defesa térmica automotiva com rejeição infravermelha extrema e claridade óptica." },
+  phantom: { title: "AeroCore Phantom™ — Película Automotiva HP Series | WINF™", description: "AeroCore Phantom™ da linha HP Series: conforto térmico e proteção UV 99,9% com estética equilibrada para o seu veículo." },
+  spectre: { title: "AeroCore Spectre™ — Película Automotiva HP Series | WINF™", description: "AeroCore Spectre™ da linha HP Series: performance térmica agressiva e privacidade para quem exige o máximo." },
+  wraith: { title: "AeroCore Wraith™ — Película Automotiva HP Series | WINF™", description: "AeroCore Wraith™ da linha HP Series: o topo da defesa térmica automotiva WINF com aparência discreta." },
+};
+
 const AeroCoreCatalog: React.FC<AeroCoreCatalogProps> = ({ product, onBack }) => {
+  const meta = PRODUCT_META[product] ?? PRODUCT_META.ghost;
+  usePageMeta({
+    title: meta.title,
+    description: meta.description,
+    path: `/aerocore/${product}`,
+    image: `/images/og/og-aerocore.png`,
+    jsonLd: [productJsonLd(`AeroCore ${meta.title.split(" ")[1]}`, meta.description, "/images/og/og-aerocore.png")],
+  });
   const data = productData[product];
 
   return (
@@ -80,7 +97,7 @@ const AeroCoreCatalog: React.FC<AeroCoreCatalogProps> = ({ product, onBack }) =>
           <ArrowLeft className="w-5 h-5" />
           <span className="text-xs font-mono uppercase tracking-widest">VOLTAR</span>
         </button>
-        <h2 className="text-xs font-mono text-zinc-500 uppercase tracking-[0.3em]">
+        <h2 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.3em]">
           AEROCORE™ CATALOG
         </h2>
       </header>
@@ -116,7 +133,7 @@ const AeroCoreCatalog: React.FC<AeroCoreCatalogProps> = ({ product, onBack }) =>
         <p className="text-sm sm:text-base font-mono text-zinc-300 uppercase leading-relaxed mb-8">
           {data.description}
         </p>
-        <div className="flex flex-wrap gap-6 text-xs font-mono text-zinc-500 uppercase tracking-wider">
+        <div className="flex flex-wrap gap-6 text-xs font-mono text-zinc-400 uppercase tracking-wider">
           {data.specs.map((spec, i) => (
             <span key={i}>{spec}</span>
           ))}
@@ -125,9 +142,9 @@ const AeroCoreCatalog: React.FC<AeroCoreCatalogProps> = ({ product, onBack }) =>
 
       {/* Image Grid */}
       <div className="max-w-7xl mx-auto px-6 sm:px-12 pb-20">
-        <h3 className="text-xs font-mono text-zinc-500 uppercase tracking-[0.3em] mb-8">
+        <h2 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.3em] mb-8">
           CATÁLOGO DE ESPECIFICAÇÕES
-        </h3>
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {data.images.map((img, index) => (
             <motion.div

@@ -1,4 +1,5 @@
 import express from "express";
+import compression from "compression";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
@@ -9,6 +10,8 @@ async function startServer() {
   const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
   app.use(express.json());
+  // Gzip/brotli-compress every text response (JS/CSS/HTML) — big perf win
+  app.use(compression());
 
   // API Route for Gemini Proxy
   app.post("/api/gemini", async (req, res) => {

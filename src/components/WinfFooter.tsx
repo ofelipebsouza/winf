@@ -44,18 +44,18 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
         {/* Ecosystem Links Row */}
         <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400">
           <button onClick={onNavigateToNeoskin} className="hover:text-white transition-colors cursor-pointer">NEOSKIN™</button>
-          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">•</span>
           <button onClick={onNavigateToAeroCore} className="hover:text-white transition-colors cursor-pointer">AEROCORE™</button>
-          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">•</span>
           <button onClick={onNavigateToWinfSelect} className="hover:text-white transition-colors cursor-pointer">WINF SELECT™ (ARQUITETURA)</button>
-          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">•</span>
           <button onClick={onNavigateToWinfSelect} className="hover:text-white transition-colors cursor-pointer">WINF™ PREMIUM QUALITY WINDOWFILM</button>
-          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">•</span>
           <button onClick={onNavigateToHome} className="hover:text-white transition-colors cursor-pointer">WINF™ PARTNERS</button>
-          <span className="text-zinc-600">•</span>
+          <span className="text-zinc-400">•</span>
           <button onClick={onNavigateToCeramic} className="hover:text-white transition-colors cursor-pointer">UNIVERSO DARK™</button>
-          <span className="text-zinc-600">•</span>
-          <span className="text-zinc-600">SYNTHWAVE FM™</span>
+          <span className="text-zinc-400">•</span>
+          <span className="text-zinc-400">SYNTHWAVE FM™</span>
         </div>
 
         {/* Language Selectors */}
@@ -64,18 +64,18 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-500" />
             BR
           </button>
-          <button className="flex items-center gap-1.5 text-zinc-500 cursor-pointer hover:text-white transition-colors">
+          <button className="flex items-center gap-1.5 text-zinc-400 cursor-pointer hover:text-white transition-colors">
             <span className="w-2 h-2 rounded-full bg-blue-500" />
             US
           </button>
-          <button className="flex items-center gap-1.5 text-zinc-500 cursor-pointer hover:text-white transition-colors">
+          <button className="flex items-center gap-1.5 text-zinc-400 cursor-pointer hover:text-white transition-colors">
             <span className="w-2 h-2 rounded-full bg-red-500" />
             CN
           </button>
         </div>
 
         {/* Secondary Links Row */}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-500">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400">
           <a href="#" className="hover:text-white transition-colors">CERTIFICAÇÕES</a>
           <a href="#" className="hover:text-white transition-colors">LICENCIAMENTO</a>
           <a href="#" className="hover:text-white transition-colors">P&D</a>
@@ -88,7 +88,7 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
 
         {/* Tagline */}
         <div className="text-center">
-          <p className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.4em] text-zinc-500">
+          <p className="text-[11px] sm:text-xs font-mono uppercase tracking-[0.4em] text-zinc-400">
             ENGENHARIA INVISÍVEL. &nbsp; PERFORMANCE INABALÁVEL.
           </p>
         </div>
@@ -98,7 +98,7 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
           <FooterSeals />
 
           {/* Copyright */}
-          <p className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-zinc-700">
+          <p id="politica-de-privacidade" className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-zinc-400">
             © 2026 {brandName}. INTEGRANTE DO ECOSISTEMA WINF™. TODOS OS DIREITOS RESERVADOS.
           </p>
         </div>

@@ -1,3 +1,5 @@
+import { PAGE_META, faqJsonLd } from '../data/siteMeta';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from "react";
 import WinfFooter from './WinfFooter';
 import { motion, AnimatePresence } from "framer-motion";
@@ -127,6 +129,8 @@ onBack,
   onNavigateToCatalog,
   onOpenMenu,
 }) => {
+  usePageMeta({ ...PAGE_META.ceramic, jsonLd: [...(PAGE_META.ceramic.jsonLd ?? []), faqJsonLd(CERAMIC_FAQ_ITEMS)] });
+
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("Orçamento Ceramic Armoring™ 9H");
   const [openFaq, setOpenFaq] = useState<string | null>(null);
@@ -197,7 +201,7 @@ onBack,
             muted
             playsInline
             preload="auto"
-            poster="/images/ceramic-hero.png"
+            poster="/images/ceramic-hero.webp"
             src="/videos/1.mp4"
             className="w-full h-full object-cover object-center brightness-90 contrast-110 scale-105"
           />
@@ -213,7 +217,7 @@ onBack,
             className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
           >
             <img 
-              src="/winf-logo.svg" 
+              src="/winf-logo.svg" width={128} height={32} 
               alt="WINF™" 
               className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
             />
@@ -422,6 +426,7 @@ onBack,
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
                     className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group"
                   >
                     <span>{faq.question}</span>
@@ -492,7 +497,7 @@ onBack,
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     IDENTIFICAÇÃO
                   </span>
                   <input
@@ -506,7 +511,7 @@ onBack,
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     SINAL PROFISSIONAL
                   </span>
                   <input
@@ -521,10 +526,10 @@ onBack,
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                   ESCOPO DO PROJETO
                 </span>
-                <select
+                <select aria-label="Área de interesse"
                   value={formInterest}
                   onChange={(e) => setFormInterest(e.target.value)}
                   className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-white outline-none cursor-pointer rounded-none"
@@ -625,7 +630,7 @@ onBack,
 
                   <div>
                     <label className="text-xs font-mono text-zinc-300 block mb-1">Interesse *</label>
-                    <select
+                    <select aria-label="Área de interesse"
                       value={formInterest}
                       onChange={(e) => setFormInterest(e.target.value)}
                       className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-xs text-white focus:border-white outline-none"

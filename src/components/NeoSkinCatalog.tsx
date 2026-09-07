@@ -1,4 +1,6 @@
 import React from "react";
+import { productJsonLd } from "../data/siteMeta";
+import { usePageMeta } from "../hooks/usePageMeta";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 
@@ -16,9 +18,9 @@ const productData = {
     description: "A BARREIRA HIDROFÓBICA E TÁTICA QUE OBLITERA A OXIDAÇÃO EM CRUZADORES E LANCHAS ÁGEIS. PROTEÇÃO PPF DE ALTA DENSIDADE PARA IMPACTOS SEVEROS.",
     specs: ["150 MICRONS", "PPF ELITE", "RESISTÊNCIA EXTREMA"],
     images: [
-      { src: "/images/neoskin-catalog/bunker-150.png", label: "BUNKER 150" },
+      { src: "/images/neoskin-catalog/bunker-150.webp", label: "BUNKER 150" },
     ],
-    banner: "/images/neoskin-catalog/banner-neoskin.png",
+    banner: "/images/neoskin-catalog/banner-neoskin.webp",
   },
   apocalypse: {
     name: "APOCALYPSE 190",
@@ -27,9 +29,9 @@ const productData = {
     description: "PROTEÇÃO FÍSICA OCEÂNICA INTRANSPONÍVEL CONTRA CORAIS AFIADOS E IMPACTOS DE ALTA ENERGIA NO CAIS. A MÁXIMA ESPESSURA EM PPF MILITAR.",
     specs: ["190 MICRONS", "PPF MILITAR", "BLINDAGEM TOTAL"],
     images: [
-      { src: "/images/neoskin-catalog/apocalypse-190.png", label: "APOCALYPSE 190" },
+      { src: "/images/neoskin-catalog/apocalypse-190.webp", label: "APOCALYPSE 190" },
     ],
-    banner: "/images/neoskin-catalog/banner-neoskin.png",
+    banner: "/images/neoskin-catalog/banner-neoskin.webp",
   },
 };
 
@@ -38,7 +40,20 @@ const fadeInUp = {
   animate: { opacity: 1, y: 0 },
 };
 
+const PRODUCT_META: Record<string, { title: string; description: string }> = {
+  bunker: { title: "NeoSkin Bunker 150™ — PPF Blindado | WINF™", description: "NeoSkin Bunker 150™: PPF de alta espessura com blindagem molecular para proteção máxima do pintado." },
+  apocalypse: { title: "NeoSkin Apocalypse™ — PPF Autorregenerável | WINF™", description: "NeoSkin Apocalypse™: paint protection film autorregenerável de alta performance para superfícies premium." },
+};
+
 const NeoSkinCatalog: React.FC<NeoSkinCatalogProps> = ({ product, onBack }) => {
+  const meta = PRODUCT_META[product] ?? PRODUCT_META.bunker;
+  usePageMeta({
+    title: meta.title,
+    description: meta.description,
+    path: `/neoskin/${product}`,
+    image: `/images/og/og-neoskin.png`,
+    jsonLd: [productJsonLd(meta.title.split(" — ")[0], meta.description, "/images/og/og-neoskin.png")],
+  });
   const data = productData[product];
 
   return (
@@ -52,7 +67,7 @@ const NeoSkinCatalog: React.FC<NeoSkinCatalogProps> = ({ product, onBack }) => {
           <ArrowLeft className="w-5 h-5" />
           <span className="text-xs font-mono uppercase tracking-widest">VOLTAR</span>
         </button>
-        <h2 className="text-xs font-mono text-zinc-500 uppercase tracking-[0.3em]">
+        <h2 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.3em]">
           NEOSKIN™ CATALOG
         </h2>
       </header>
@@ -88,7 +103,7 @@ const NeoSkinCatalog: React.FC<NeoSkinCatalogProps> = ({ product, onBack }) => {
         <p className="text-sm sm:text-base font-mono text-zinc-300 uppercase leading-relaxed mb-8">
           {data.description}
         </p>
-        <div className="flex flex-wrap gap-6 text-xs font-mono text-zinc-500 uppercase tracking-wider">
+        <div className="flex flex-wrap gap-6 text-xs font-mono text-zinc-400 uppercase tracking-wider">
           {data.specs.map((spec, i) => (
             <span key={i}>{spec}</span>
           ))}
@@ -97,9 +112,9 @@ const NeoSkinCatalog: React.FC<NeoSkinCatalogProps> = ({ product, onBack }) => {
 
       {/* Image Grid */}
       <div className="max-w-7xl mx-auto px-6 sm:px-12 pb-20">
-        <h3 className="text-xs font-mono text-zinc-500 uppercase tracking-[0.3em] mb-8">
+        <h2 className="text-xs font-mono text-zinc-400 uppercase tracking-[0.3em] mb-8">
           CATÁLOGO DE ESPECIFICAÇÕES
-        </h3>
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {data.images.map((img, index) => (
             <motion.div

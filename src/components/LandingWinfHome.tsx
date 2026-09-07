@@ -1,3 +1,5 @@
+import { PAGE_META } from '../data/siteMeta';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FooterSeals } from './FooterSeals';
@@ -49,6 +51,8 @@ const MediaPlaceholder: React.FC<MediaPlaceholderProps> = ({
   className = '',
   minHeight = 'min-h-[420px]'
 }) => {
+  usePageMeta(PAGE_META['winf-home']);
+
   return (
     <div
       className={`relative w-full ${minHeight} bg-[#0c0c0e] border border-white/15 rounded-none overflow-hidden flex flex-col justify-between p-6 sm:p-8 select-none group transition-all duration-500 hover:border-white/30 ${className}`}
@@ -66,7 +70,7 @@ const MediaPlaceholder: React.FC<MediaPlaceholderProps> = ({
       <div className="absolute inset-0 bg-radial-gradient from-white/[0.03] via-transparent to-transparent pointer-events-none" />
 
       {/* Top Metadata Row */}
-      <div className="w-full flex items-center justify-between z-10 text-[10px] sm:text-xs font-mono uppercase tracking-[0.25em] text-zinc-500">
+      <div className="w-full flex items-center justify-between z-10 text-[10px] sm:text-xs font-mono uppercase tracking-[0.25em] text-zinc-400">
         <div className="flex items-center gap-2">
           {type === 'video' ? (
             <Film className="w-3.5 h-3.5 text-zinc-400" />
@@ -94,14 +98,14 @@ const MediaPlaceholder: React.FC<MediaPlaceholderProps> = ({
           <div className="text-sm sm:text-base md:text-lg font-sans font-bold uppercase tracking-widest text-white">
             {label}
           </div>
-          <div className="text-[10px] sm:text-xs font-mono tracking-widest text-zinc-500 uppercase">
+          <div className="text-[10px] sm:text-xs font-mono tracking-widest text-zinc-400 uppercase">
             TARGET_RES // {dimension}
           </div>
         </div>
       </div>
 
       {/* Bottom Technical Crosshairs & Footer */}
-      <div className="w-full flex items-center justify-between z-10 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-600 border-t border-white/5 pt-3">
+      <div className="w-full flex items-center justify-between z-10 text-[9px] sm:text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 border-t border-white/5 pt-3">
         <span>[ + ] 0.00° LATENCY</span>
         <span>WINF_OS_MEDIA_CONTAINER</span>
       </div>
@@ -216,7 +220,7 @@ onNavigateToWinfSelect,
               className="flex items-center gap-2 group cursor-pointer"
             >
               <img 
-                src="/winf-logo.svg" 
+                src="/winf-logo.svg" width={128} height={32} 
                 alt="Koenigsegg / WINF" 
                 className="h-7 sm:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
               />
@@ -303,7 +307,7 @@ onNavigateToWinfSelect,
         {/* Component Navigation (Horizontal Tabs) */}
         <div className="w-full max-w-7xl mx-auto z-20 space-y-10">
           
-          <div className="flex items-center gap-6 sm:gap-10 overflow-x-auto pb-4 border-b border-white/10 text-xs font-mono uppercase tracking-[0.2em] text-zinc-500 custom-scrollbar">
+          <div className="flex items-center gap-6 sm:gap-10 overflow-x-auto pb-4 border-b border-white/10 text-xs font-mono uppercase tracking-[0.2em] text-zinc-400 custom-scrollbar">
             {TABS_DATA.map((tab, idx) => (
               <button
                 key={tab.id}
@@ -325,13 +329,13 @@ onNavigateToWinfSelect,
 
           {/* Tab Content (Multiline Heading + Discover More CTA) */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pt-4">
-            <h3 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
               {currentTab.lines.map((line, lIdx) => (
                 <div key={lIdx} className="line">
                   {line}
                 </div>
               ))}
-            </h3>
+            </h2>
 
             <button
               onClick={currentTab.action}
@@ -379,7 +383,7 @@ onNavigateToWinfSelect,
             <div className="h-[1px] w-0 group-hover:w-full bg-white transition-all duration-300 mt-1" />
           </button>
 
-          <span className="text-[10px] text-zinc-600">
+          <span className="text-[10px] text-zinc-400">
             07 HOMOLOGATED LINES
           </span>
         </div>
@@ -405,9 +409,9 @@ onNavigateToWinfSelect,
 
           {/* Right / Top Text & CTA */}
           <div className="lg:col-span-7 order-1 lg:order-2 space-y-6 lg:pl-8">
-            <h4 className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-500">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-400">
               Technological<br />Achievements
-            </h4>
+            </p>
 
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
               <div>In-house</div>
@@ -451,15 +455,15 @@ onNavigateToWinfSelect,
 
           {/* Content Right */}
           <div className="lg:col-span-7 space-y-6 lg:pl-8">
-            <h4 className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-500">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-400">
               About us
-            </h4>
+            </p>
 
-            <h3 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
               <div>Why we</div>
               <div>Do what</div>
               <div>We do</div>
-            </h3>
+            </h2>
 
             <p className="text-zinc-400 text-sm font-light leading-relaxed max-w-xl">
               Every single detail of a WINF ecosystem solution is measured against our continuing goal: to enhance vehicle & architectural performance.
@@ -487,15 +491,15 @@ onNavigateToWinfSelect,
           
           {/* Content Left */}
           <div className="lg:col-span-7 space-y-6 lg:pr-8 order-2 lg:order-1">
-            <h4 className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-500">
+            <p className="text-xs font-mono uppercase tracking-[0.3em] text-zinc-400">
               Our history
-            </h4>
+            </p>
 
-            <h3 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-sans font-black uppercase text-white tracking-tight leading-[0.92]">
               <div>Delivering on</div>
               <div>A singular</div>
               <div>Vision</div>
-            </h3>
+            </h2>
 
             <p className="text-zinc-400 text-sm font-light leading-relaxed max-w-xl">
               From our origins in high-performance solar protection to our advanced nanomaterial laboratories, WINF was born with a singular mission: to protect the uncompromising.
@@ -545,8 +549,8 @@ onNavigateToWinfSelect,
               </h2>
 
               <div className="flex items-center gap-4 pt-4">
-                <img src="/winf-logo.svg" alt="WINF Shield" className="h-6 w-auto opacity-80" />
-                <span className="text-[10px] text-zinc-500 uppercase tracking-widest border-l border-white/20 pl-3">
+                <img src="/winf-logo.svg" width={128} height={32} alt="WINF Shield" className="h-6 w-auto opacity-80" />
+                <span className="text-[10px] text-zinc-400 uppercase tracking-widest border-l border-white/20 pl-3">
                   ISO 9001 CERTIFICATION
                 </span>
               </div>
@@ -557,7 +561,7 @@ onNavigateToWinfSelect,
               
               <div className="space-y-4">
                 <div className="text-white font-bold tracking-widest">MEGACARS</div>
-                <ul className="space-y-3 text-zinc-500 text-[11px]">
+                <ul className="space-y-3 text-zinc-400 text-[11px]">
                   <li><button onClick={onNavigateToAeroCore} className="hover:text-white cursor-pointer transition-colors">AEROCORE™</button></li>
                   <li><button onClick={onNavigateToNeoskin} className="hover:text-white cursor-pointer transition-colors">NEOSKIN™</button></li>
                   <li><button onClick={onNavigateToWinfSelect} className="hover:text-white cursor-pointer transition-colors">WINF SELECT™</button></li>
@@ -567,17 +571,17 @@ onNavigateToWinfSelect,
 
               <div className="space-y-4">
                 <div className="text-white font-bold tracking-widest">TECHNOLOGY</div>
-                <ul className="space-y-3 text-zinc-500 text-[11px]">
+                <ul className="space-y-3 text-zinc-400 text-[11px]">
                   <li><button onClick={onNavigateToWinfSelect} className="hover:text-white cursor-pointer transition-colors">BLACKSHOP™</button></li>
                   <li><button onClick={onNavigateToWinfSelect} className="hover:text-white cursor-pointer transition-colors">INVISIBLE™</button></li>
                   <li><button onClick={onNavigateToWinfSelect} className="hover:text-white cursor-pointer transition-colors">DUAL-REFLECT™</button></li>
-                  <li><span className="text-zinc-600">NANOCERÂMICA</span></li>
+                  <li><span className="text-zinc-400">NANOCERÂMICA</span></li>
                 </ul>
               </div>
 
               <div className="space-y-4">
                 <div className="text-white font-bold tracking-widest">SERVICES</div>
-                <ul className="space-y-3 text-zinc-500 text-[11px]">
+                <ul className="space-y-3 text-zinc-400 text-[11px]">
                   <li><button onClick={() => handleOpenContact('Dealer locator')} className="hover:text-white cursor-pointer transition-colors">DEALER LOCATOR</button></li>
                   <li><button onClick={() => handleOpenContact('Shop')} className="hover:text-white cursor-pointer transition-colors">SHOP</button></li>
                   <li><button onClick={() => handleOpenContact('Contact')} className="hover:text-white cursor-pointer transition-colors">CONTACT</button></li>
@@ -614,7 +618,7 @@ onNavigateToWinfSelect,
           </div>
 
           {/* Small Print Copyright & Tertiary Links */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-[10px] text-zinc-600 tracking-wider uppercase border-t border-white/5 pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-[10px] text-zinc-400 tracking-wider uppercase border-t border-white/5 pt-6">
             <p>Copyright © since 1994 – WINF Automotive & Architectural Ecosystem AB</p>
             <div className="flex items-center gap-6">
               <a href="#" className="hover:text-zinc-400 transition-colors">Sitemap</a>
@@ -688,7 +692,7 @@ onNavigateToWinfSelect,
               {formSubmitted ? (
                 <div className="text-center py-8">
                   <CheckCircle2 className="w-12 h-12 text-white mx-auto mb-4" />
-                  <h4 className="text-lg text-white font-medium mb-2">Solicitação Preparada</h4>
+                  <h3 className="text-lg text-white font-medium mb-2">Solicitação Preparada</h3>
                   <p className="text-xs text-zinc-400">Você será redirecionado para o WhatsApp oficial de atendimento.</p>
                 </div>
               ) : (
@@ -719,7 +723,7 @@ onNavigateToWinfSelect,
 
                   <div>
                     <label className="text-xs font-mono text-zinc-300 block mb-1">Interesse / Produto *</label>
-                    <select
+                    <select aria-label="Área de interesse"
                       value={formInterest}
                       onChange={(e) => setFormInterest(e.target.value)}
                       className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-sm text-white focus:border-white outline-none font-mono"

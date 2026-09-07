@@ -1,3 +1,6 @@
+import { PAGE_META, faqJsonLd } from '../data/siteMeta';
+import LazyVideo from './LazyVideo';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import KoenigseggMenu from "./KoenigseggMenu";
@@ -138,6 +141,8 @@ onBack,
   onNavigateToWraith,
   onOpenMenu,
 }) => {
+  usePageMeta({ ...PAGE_META.aerocore, jsonLd: [...(PAGE_META.aerocore.jsonLd ?? []), faqJsonLd(AERO_FAQ_ITEMS)] });
+
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState("Orçamento AeroCore™ Window Film");
   const [activeTab, setActiveTab] = useState<string>("all");
@@ -209,7 +214,7 @@ onBack,
             muted
             playsInline
             preload="auto"
-            poster="/images/aerocore-hero.png"
+            poster="/images/aerocore-hero.webp"
             src="/videos/1.mp4"
             className="w-full h-full object-cover object-center brightness-90 contrast-110 scale-105"
           />
@@ -218,10 +223,10 @@ onBack,
           <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/20 to-black/70" />
           
           {/* Tactical Crosshairs & Ambient telemetry */}
-          <div className="absolute top-24 left-8 text-[9px] font-mono tracking-widest text-zinc-500 uppercase hidden md:block">
+          <div className="absolute top-24 left-8 text-[9px] font-mono tracking-widest text-zinc-400 uppercase hidden md:block">
             CORE_LATENCY_0.003ms // GRID_STABILITY_100%
           </div>
-          <div className="absolute bottom-24 right-8 text-[9px] font-mono tracking-widest text-zinc-500 uppercase hidden md:block">
+          <div className="absolute bottom-24 right-8 text-[9px] font-mono tracking-widest text-zinc-400 uppercase hidden md:block">
             NEURAL_DEFENSE_ACTIVE // SPECTRAL_LOCK
           </div>
         </div>
@@ -233,7 +238,7 @@ onBack,
             className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
           >
             <img 
-              src="/winf-logo.svg" 
+              src="/winf-logo.svg" width={128} height={32} 
               alt="WINF™" 
               className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
             />
@@ -422,7 +427,7 @@ onBack,
       </section>
 
       {/* 03 — ARSENAL.AEROCORE() // SOLUÇÕES DE PELÍCULAS */}
-      <section id="arsenal" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
+      <section id="arsenal" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-7xl mx-auto">
           {/* Centered Section Header */}
           <div className="text-center flex flex-col items-center mb-16">
@@ -607,7 +612,7 @@ onBack,
       </section>
 
       {/* 04 — DATASHEET.WINDOWFILM() // ESPECIFICAÇÕES TÉCNICAS DETALHADAS */}
-      <section id="datasheet" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="datasheet" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-6xl mx-auto">
           {/* Header & Tabs */}
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-16 gap-8">
@@ -624,7 +629,7 @@ onBack,
               >
                 <span className="text-white block">ESPECIFICAÇÕES</span>
                 <span className="text-zinc-400 block">TÉCNICAS</span>
-                <span className="text-zinc-500 block">DETALHADAS</span>
+                <span className="text-zinc-400 block">DETALHADAS</span>
               </motion.h2>
             </div>
 
@@ -710,7 +715,7 @@ onBack,
             </div>
 
             {/* Table Footer */}
-            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-500 uppercase tracking-widest bg-zinc-950/60">
+            <div className="p-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-zinc-400 uppercase tracking-widest bg-zinc-950/60">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-[#3B82F6] animate-pulse" />
                 <span>* TODOS OS TESTES HOMOLOGADOS EM CONFORMIDADE COM AS DIRETIVAS ASTM & ISO.</span>
@@ -722,7 +727,7 @@ onBack,
       </section>
 
       {/* 05 — DÚVIDAS TÁTICAS (FAQ) */}
-      <section className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
+      <section className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <motion.div {...fadeInUp} className="text-center mb-16">
@@ -743,6 +748,7 @@ onBack,
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
+                    aria-expanded={isOpen}
                     className="w-full py-4 flex items-center justify-between text-left text-sm sm:text-base font-light text-zinc-200 hover:text-white transition-colors cursor-pointer group"
                   >
                     <span>{faq.question}</span>
@@ -776,23 +782,14 @@ onBack,
       </section>
 
       {/* 06 — CINEMATIC CAR SCENE BANNER */}
-      <section className="relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/images/aerocore-hero.png"
-          src="/videos/1.mp4"
-          className="w-full h-full object-cover object-center brightness-75 scale-105"
-        />
+      <section className="cv-auto relative h-[60vh] sm:h-[75vh] w-full overflow-hidden border-t border-white/10">
+        <LazyVideo poster="/images/aerocore-hero.webp" src="/videos/1.mp4" className="w-full h-full object-cover object-center brightness-75 scale-105" />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black" />
         <div className="absolute inset-0 bg-radial-gradient from-transparent to-black/60" />
       </section>
 
       {/* 07 — PROTOCOLO DE CONTATO // CANAL SEGURO */}
-      <section id="contato" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
+      <section id="contato" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black">
         <div className="max-w-3xl mx-auto">
           <motion.div {...fadeInUp} className="text-center mb-16">
             <span className="text-xs font-mono uppercase tracking-[0.35em] text-[#3B82F6] block mb-3 font-semibold">
@@ -829,7 +826,7 @@ onBack,
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12">
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     IDENTIFICAÇÃO
                   </span>
                   <input
@@ -843,7 +840,7 @@ onBack,
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                     SINAL PROFISSIONAL
                   </span>
                   <input
@@ -858,10 +855,10 @@ onBack,
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 block mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 block mb-2">
                   ESCOPO DO PROJETO
                 </span>
-                <select
+                <select aria-label="Área de interesse"
                   value={formInterest}
                   onChange={(e) => setFormInterest(e.target.value)}
                   className="w-full pb-3 bg-black border-b border-white/20 text-white text-xs font-mono uppercase tracking-wider focus:border-[#3B82F6] outline-none cursor-pointer rounded-none"
@@ -960,7 +957,7 @@ onBack,
 
                   <div>
                     <label className="text-xs font-mono text-zinc-300 block mb-1">Interesse *</label>
-                    <select
+                    <select aria-label="Área de interesse"
                       value={formInterest}
                       onChange={(e) => setFormInterest(e.target.value)}
                       className="w-full px-4 py-3 bg-black/70 border border-white/15 rounded-none text-xs text-white focus:border-[#3B82F6] outline-none"

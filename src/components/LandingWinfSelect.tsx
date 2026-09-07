@@ -1,7 +1,10 @@
+import { PAGE_META } from '../data/siteMeta';
+import { usePageMeta } from '../hooks/usePageMeta';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, CheckCircle2, ExternalLink, Globe } from 'lucide-react';
 import { FooterSeals } from './FooterSeals';
+import { ARTICLES } from '../data/articles';
 
 interface LandingWinfSelectProps {
   onBack?: () => void;
@@ -13,6 +16,7 @@ interface LandingWinfSelectProps {
   onNavigateToBlackPro?: () => void;
   onNavigateToSecurityBlinder?: () => void;
   onNavigateToMiniblindVenetian?: () => void;
+  onNavigateToBlog?: (slug?: string) => void;
   onContactConsultant?: () => void;
   videoSrc?: string;
   onOpenMenu?: () => void;
@@ -33,6 +37,25 @@ const fadeInLabel = {
   transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
 };
 
+// Video that only downloads/plays when scrolled into view (saves ~50MB+ on first paint)
+const LazyVideo: React.FC<{ src: string; poster: string; className?: string }> = ({ src, poster, className }) => {
+  const ref = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.15 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+  return <video ref={ref} loop muted playsInline preload="none" poster={poster} src={src} className={className} />;
+};
+
 export const LandingWinfSelect: React.FC<LandingWinfSelectProps> = ({
 onBack,
   onNavigateToAerocore,
@@ -43,10 +66,13 @@ onBack,
   onNavigateToBlackPro,
   onNavigateToSecurityBlinder,
   onNavigateToMiniblindVenetian,
+  onNavigateToBlog,
   onContactConsultant,
   videoSrc = '/videos/video-bg.mp4',
   onOpenMenu,
 }) => {
+  usePageMeta(PAGE_META['home']);
+
     const [scrollProgress, setScrollProgress] = useState(0);
 
   // Video Ref & Animation Engine
@@ -179,14 +205,14 @@ onBack,
 
   // Brand showcase covers — logo over looping background video
   const BRANDS: { id: string; name: string; short?: string; category: string; logo?: string; logoClass?: string; video: string; poster: string; action?: () => void }[] = [
-    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/aerocore/aerocore-hero.mp4', poster: '/images/aerocore-hero.png', action: onNavigateToAerocore },
-    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/neoskin/neoskin-hero.mp4', poster: '/images/neoskin-hero.png', action: onNavigateToNeoskin },
-    { id: 'ceramic', name: 'Ceramic Armoring™', short: 'CERAMIC™', category: 'BLINDAGEM MOLECULAR 9H', video: '/videos/1.mp4', poster: '/images/ceramic-hero.png', action: onNavigateToCeramic },
-    { id: 'invisible', name: 'Invisible™', category: 'NANO CERÂMICA ARQUITETÔNICA', logo: '/logo-invisible.svg', logoClass: 'w-32', video: '/videos/invisible-hero.mp4', poster: '/images/invisible-poster-1.png', action: onNavigateToInvisible },
-    { id: 'dual-reflect', name: 'Dual Reflect™', category: 'CONTROLE SOLAR REFLETIVO', logo: '/logo-dual-reflect.svg', logoClass: 'w-32', video: '/videos/dualreflect-hero.mp4', poster: '/images/dualreflect-poster-1.png', action: onNavigateToDualReflect },
-    { id: 'blackpro', name: 'BlackPro™', category: 'PRIVACIDADE ARQUITETÔNICA', logo: '/logo-blackpro.svg', logoClass: 'w-32', video: '/videos/blackpro-hero.mp4', poster: '/images/blackpro-poster-1.png', action: onNavigateToBlackPro },
-    { id: 'securityblind', name: 'SecurityBlinder™', short: 'SECURITYBLINDER™', category: 'SAFETY & SECURITY FILM', video: '/videos/3.mp4', poster: '/images/invisible-poster-2.png', action: onNavigateToSecurityBlinder },
-    { id: 'miniblind-venetian', name: 'Miniblind & Venetian™', category: 'PELÍCULA DECORATIVA', logo: '/images/miniblind-venetian/minibrind-venetian-logo.svg', logoClass: 'w-28', video: '/videos/mbv-figures.mp4', poster: '/images/miniblind-venetian/scene-01.png', action: onNavigateToMiniblindVenetian },
+    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/aerocore/aerocore-hero.mp4', poster: '/images/aerocore-hero.webp', action: onNavigateToAerocore },
+    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/neoskin/neoskin-hero.mp4', poster: '/images/neoskin-hero.webp', action: onNavigateToNeoskin },
+    { id: 'ceramic', name: 'Ceramic Armoring™', short: 'CERAMIC™', category: 'BLINDAGEM MOLECULAR 9H', video: '/videos/1.mp4', poster: '/images/ceramic-hero.webp', action: onNavigateToCeramic },
+    { id: 'invisible', name: 'Invisible™', category: 'NANO CERÂMICA ARQUITETÔNICA', logo: '/logo-invisible.svg', logoClass: 'w-32', video: '/videos/invisible-hero.mp4', poster: '/images/invisible-poster-1.webp', action: onNavigateToInvisible },
+    { id: 'dual-reflect', name: 'Dual Reflect™', category: 'CONTROLE SOLAR REFLETIVO', logo: '/logo-dual-reflect.svg', logoClass: 'w-32', video: '/videos/dualreflect-hero.mp4', poster: '/images/dualreflect-poster-1.webp', action: onNavigateToDualReflect },
+    { id: 'blackpro', name: 'BlackPro™', category: 'PRIVACIDADE ARQUITETÔNICA', logo: '/logo-blackpro.svg', logoClass: 'w-32', video: '/videos/blackpro-hero.mp4', poster: '/images/blackpro-poster-1.webp', action: onNavigateToBlackPro },
+    { id: 'securityblind', name: 'SecurityBlinder™', short: 'SECURITYBLINDER™', category: 'SAFETY & SECURITY FILM', video: '/videos/securityblind/sbv-impact.mp4', poster: '/images/securityblind/scene-07.webp', action: onNavigateToSecurityBlinder },
+    { id: 'miniblind-venetian', name: 'Miniblind & Venetian™', category: 'PELÍCULA DECORATIVA', logo: '/images/miniblind-venetian/minibrind-venetian-logo.svg', logoClass: 'w-28', video: '/videos/mbv-figures.mp4', poster: '/images/miniblind-venetian/scene-01.webp', action: onNavigateToMiniblindVenetian },
   ];
 
   return (
@@ -216,7 +242,7 @@ onBack,
             className={`flex items-center ${onBack ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}`}
           >
             <img 
-              src="/winf-logo.svg" 
+              src="/winf-logo.svg" width={128} height={32} 
               alt="WINF™" 
               className="h-6 sm:h-7 md:h-8 w-auto object-contain brightness-100 drop-shadow-[0_2px_12px_rgba(0,0,0,0.8)]"
             />
@@ -357,12 +383,7 @@ onBack,
               >
                 {/* Cover — logo over looping video */}
                 <div className="relative h-64 sm:h-72 overflow-hidden">
-                  <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    preload="metadata"
+                  <LazyVideo
                     poster={brand.poster}
                     src={brand.video}
                     className="w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
@@ -373,6 +394,8 @@ onBack,
                   <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
                     {brand.logo ? (
                       <img
+                        width={128}
+                        height={48}
                         src={brand.logo}
                         alt={brand.name}
                         className={`${brand.logoClass || 'w-32'} h-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500`}
@@ -442,7 +465,73 @@ onBack,
         </div>
       </section>
 
-      {/* 05 — CONTATO (FORMULÁRIO EDITORIAL) */}
+      {/* 05 — WINF JOURNAL // ARTIGOS */}
+      <section id="journal" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black/30 backdrop-blur-[1px]">
+        <div className="max-w-6xl mx-auto">
+          <motion.div {...fadeInLabel} className="text-[11px] sm:text-xs font-mono uppercase text-zinc-400 mb-6 drop-shadow">
+            CONHECIMENTO // WINF JOURNAL
+          </motion.div>
+
+          <motion.h2 {...fadeInUp} className="text-3xl sm:text-5xl font-light text-white uppercase tracking-tight mb-6 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+            WINF Journal™
+          </motion.h2>
+          <motion.p {...fadeInUp} transition={{ duration: 0.9, delay: 0.1 }} className="text-sm sm:text-base text-zinc-300 font-light max-w-2xl mb-16 drop-shadow">
+            Engenharia, tecnologia e design aplicados ao vidro — artigos técnicos do ecossistema WINF™.
+          </motion.p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {ARTICLES.slice(0, 3).map((article, idx) => (
+              <motion.div
+                key={article.slug}
+                initial={{ opacity: 0, y: 50, scale: 0.97, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.8, delay: (idx % 3) * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                onClick={() => onNavigateToBlog && onNavigateToBlog(article.slug)}
+                className="relative group overflow-hidden border border-white/15 hover:border-white/50 bg-black/50 shadow-2xl cursor-pointer transition-all duration-300 flex flex-col"
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <img
+                    src={article.cover}
+                    alt={article.title}
+                    className="w-full h-full object-cover opacity-60 group-hover:opacity-85 group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+                  <span className="absolute top-4 left-4 text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-200 border border-white/30 bg-black/60 backdrop-blur-sm px-2.5 py-1">
+                    {article.tag}
+                  </span>
+                </div>
+                <div className="flex flex-col flex-1 p-6">
+                  <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 mb-4">
+                    <span>{article.date}</span>
+                    <span>{article.readTime}</span>
+                  </div>
+                  <h3 className="text-lg font-light text-white uppercase tracking-tight leading-snug mb-3 group-hover:translate-x-1 transition-transform duration-500">
+                    {article.title}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-zinc-400 font-light leading-relaxed mb-5 line-clamp-3">{article.excerpt}</p>
+                  <span className="mt-auto flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-zinc-300 group-hover:text-white">
+                    <span>LER</span>
+                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div {...fadeInUp} transition={{ duration: 0.9, delay: 0.2 }} className="mt-12 flex justify-center">
+            <button
+              onClick={() => onNavigateToBlog && onNavigateToBlog()}
+              className="px-8 py-4 border border-white/30 bg-black/40 hover:bg-black/70 text-zinc-200 hover:text-white font-mono text-xs uppercase tracking-widest transition-all cursor-pointer inline-flex items-center gap-2"
+            >
+              <span>VER TODOS OS ARTIGOS</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 06 — CONTATO (FORMULÁRIO EDITORIAL) */}
       <section id="contato" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black/50 backdrop-blur-md">
         <div className="max-w-3xl mx-auto">
           <motion.div {...fadeInLabel} className="text-[11px] sm:text-xs font-mono uppercase text-zinc-400 mb-4 drop-shadow">
@@ -540,7 +629,7 @@ onBack,
                   <label className="text-xs font-mono uppercase tracking-wider text-zinc-300 block mb-2">
                     Tipo de Projeto
                   </label>
-                  <select
+                  <select aria-label="Tipo de projeto"
                     value={formProjectType}
                     onChange={(e) => setFormProjectType(e.target.value)}
                     className="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white text-sm focus:border-white outline-none rounded-none"
@@ -571,7 +660,7 @@ onBack,
                 <label className="text-xs font-mono uppercase tracking-wider text-zinc-300 block mb-2">
                   Principal Necessidade
                 </label>
-                <select
+                <select aria-label="Principal necessidade"
                   value={formNeed}
                   onChange={(e) => setFormNeed(e.target.value)}
                   className="w-full px-0 py-3 bg-transparent border-b border-white/20 text-white text-sm focus:border-white outline-none rounded-none"
@@ -604,7 +693,7 @@ onBack,
         <div className="max-w-6xl mx-auto space-y-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <img src="/winf-logo.svg" alt="WINF™" className="h-6 w-auto opacity-90 drop-shadow" />
+              <img src="/winf-logo.svg" width={128} height={32} alt="WINF™" className="h-6 w-auto opacity-90 drop-shadow" />
               <span className="text-[10px] tracking-widest uppercase text-zinc-400">
                 // ECOSSISTEMA DE ATIVOS AEROCORE™ | GOVERNANÇA DE DADOS
               </span>
@@ -635,13 +724,13 @@ onBack,
                 <span>CATÁLOGO</span>
               </a>
               <span>•</span>
-              <span className="text-zinc-500">LEGAL SECURITIES (INPI_DEED)</span>
+              <span className="text-zinc-400">LEGAL SECURITIES (INPI_DEED)</span>
             </div>
           </div>
 
           <FooterSeals />
 
-          <div className="text-[11px] text-zinc-500 leading-relaxed border-t border-white/5 pt-8">
+          <div id="politica-de-privacidade" className="text-[11px] text-zinc-400 leading-relaxed border-t border-white/5 pt-8">
             © 2026 WINF Partners™ | AeroCore™ Asset Ecosystem. Todos os direitos reservados. O uso não autorizado deste software ou de seus algoritmos conversacionais viola a Lei de Propriedade Industrial (Lei nº 9.279/96) e a Lei do Software (Lei nº 9.609/98).
           </div>
         </div>

@@ -1,23 +1,69 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="pt-BR" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Winf Digital Ecosystem</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Google Analytics (placeholder) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX', { send_page_view: false });
+    <!-- Primary SEO (defaults — overridden per page by usePageMeta) -->
+    <title>WINF™ — Engenharia Invisível em Vidro | Películas Arquitetônicas e Automotivas</title>
+    <meta name="description" content="Ecossistema WINF™ de tecnologia aplicada ao vidro: controle térmico, proteção UV, privacidade, blindagem e segurança. Conheça AeroCore™, Invisible™, BlackPro™, SecurityBlinder™ e mais." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="WINF Partners™" />
+    <meta name="theme-color" content="#09090b" />
+    <link rel="canonical" href="https://winf.com.br/" />
+
+    <!-- Fonts (small, self-hosted) -->
+    <link rel="preload" href="/fonts/gustavo-light.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/gustavo-regular.otf" as="font" type="font/otf" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/winf-logo.svg" />
+    <link rel="icon" type="image/png" href="/winf-logo.png" />
+    <link rel="apple-touch-icon" href="/winf-logo.png" />
+
+    <!-- Open Graph / Social covers -->
+    <meta property="og:site_name" content="WINF™" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content="WINF™ — Engenharia Invisível em Vidro" />
+    <meta property="og:description" content="Controle térmico, proteção UV, privacidade, blindagem e segurança — tecnologia aplicada ao vidro sem alterar a arquitetura." />
+    <meta property="og:url" content="https://winf.com.br/" />
+    <meta property="og:image" content="https://winf.com.br/images/og/og-winf-select.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="WINF™ — Engenharia Invisível em Vidro" />
+    <meta name="twitter:description" content="Controle térmico, proteção UV, privacidade, blindagem e segurança — tecnologia aplicada ao vidro sem alterar a arquitetura." />
+    <meta name="twitter:image" content="https://winf.com.br/images/og/og-winf-select.png" />
+
+    <!-- Global structured data: Organization + WebSite (AEO) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://winf.com.br/#org",
+          "name": "WINF Partners™",
+          "url": "https://winf.com.br/",
+          "logo": "https://winf.com.br/winf-logo.png",
+          "description": "Ecossistema de engenharia aplicada ao vidro: defesa térmica, proteção de pintura, blindagem molecular, nano cerâmica, privacidade, segurança e película decorativa.",
+          "sameAs": ["https://www.instagram.com/winf.windowfilm"]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://winf.com.br/#site",
+          "url": "https://winf.com.br/",
+          "name": "WINF™",
+          "inLanguage": "pt-BR",
+          "publisher": { "@id": "https://winf.com.br/#org" }
+        }
+      ]
+    }
     </script>
-
-    <!-- JetBrains Mono (mono font only — Gustavo is loaded via @font-face in CSS) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
       body {
@@ -25,9 +71,20 @@
         color: #fafafa;
         -webkit-font-smoothing: antialiased;
       }
+      /* Skip-link: visible on first Tab */
+      .skip-link:not(:focus) {
+        position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+      }
+      .skip-link:focus {
+        position: fixed; top: 12px; left: 12px; z-index: 9999;
+        background: #fafafa; color: #09090b; padding: 10px 18px;
+        font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+        outline: 2px solid #fafafa; outline-offset: 2px;
+      }
     </style>
   </head>
   <body class="antialiased selection:bg-winf-primary/30 selection:text-white">
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
