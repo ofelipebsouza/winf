@@ -76,11 +76,11 @@ export const WinfFooter: React.FC<WinfFooterProps> = ({
 
         {/* Secondary Links Row */}
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.2em] text-zinc-400">
-          <a href="#" className="hover:text-white transition-colors">CERTIFICAÇÕES</a>
-          <a href="#" className="hover:text-white transition-colors">LICENCIAMENTO</a>
-          <a href="#" className="hover:text-white transition-colors">P&D</a>
-          <a href="#" className="hover:text-white transition-colors">JURÍDICO</a>
-          <a href="#" className="hover:text-white transition-colors">PRIVACIDADE</a>
+          <a href="#" data-pending="true" className="hover:text-white transition-colors">CERTIFICAÇÕES</a>
+          <a href="#" data-pending="true" className="hover:text-white transition-colors">LICENCIAMENTO</a>
+          <a href="#" data-pending="true" className="hover:text-white transition-colors">P&D</a>
+          <a href="#" data-pending="true" className="hover:text-white transition-colors">JURÍDICO</a>
+          <a href="#" data-pending="true" className="hover:text-white transition-colors">PRIVACIDADE</a>
         </div>
 
         {/* Divider */}
