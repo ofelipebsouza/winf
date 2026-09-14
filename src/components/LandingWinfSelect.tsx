@@ -75,12 +75,8 @@ onBack,
 
     const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Video Ref & Animation Engine
+  // Video Ref
   const videoRef = useRef<HTMLVideoElement>(null);
-  const targetProgressRef = useRef<number>(0);
-  const currentProgressRef = useRef<number>(0);
-  const isVideoReadyRef = useRef<boolean>(false);
-  const isSeekingRef = useRef<boolean>(false);
 
   // Contact Form State
   const [formName, setFormName] = useState('');
@@ -92,88 +88,18 @@ onBack,
   const [formNeed, setFormNeed] = useState('Controle térmico');
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Global Scroll Video Scrubbing Engine across entire page
+  // Scroll progress for UI animations (no video scrubbing)
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const handleLoadedMetadata = () => {
-      isVideoReadyRef.current = true;
-      video.pause();
-    };
-
-    video.addEventListener('loadedmetadata', handleLoadedMetadata);
-    video.addEventListener('seeked', () => {
-      isSeekingRef.current = false;
-    });
-
-    if (video.readyState >= 1) {
-      isVideoReadyRef.current = true;
-      video.pause();
-    }
-
-    let animationFrameId: number;
-
-    const updateVideoLoop = () => {
-      if (video && isVideoReadyRef.current && video.duration) {
-        const target = targetProgressRef.current;
-        const current = currentProgressRef.current;
-        const diff = target - current;
-
-        // Apply smooth inertia damping
-        currentProgressRef.current += diff * 0.12;
-        const targetTime = currentProgressRef.current * video.duration;
-        const timeDiff = targetTime - video.currentTime;
-
-        // Forward scrubbing: use hardware accelerated playbackRate
-        if (timeDiff > 0.08) {
-          const speed = Math.min(Math.max(timeDiff * 4.5, 0.75), 4.0);
-          video.playbackRate = speed;
-          if (video.paused) {
-            video.play().catch(() => {});
-          }
-        } else if (timeDiff < -0.05) {
-          // Backward scrubbing: step backwards smoothly
-          if (!video.paused) {
-            video.pause();
-          }
-          if (!isSeekingRef.current) {
-            isSeekingRef.current = true;
-            video.currentTime = Math.max(0, video.currentTime + timeDiff * 0.4);
-          }
-        } else {
-          // Settled on target frame
-          if (!video.paused) {
-            video.pause();
-          }
-          if (Math.abs(timeDiff) > 0.01 && !isSeekingRef.current) {
-            isSeekingRef.current = true;
-            video.currentTime = targetTime;
-          }
-        }
-      }
-      animationFrameId = requestAnimationFrame(updateVideoLoop);
-    };
-
-    animationFrameId = requestAnimationFrame(updateVideoLoop);
-
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (totalHeight > 0) {
         const progress = Math.min(1, Math.max(0, window.scrollY / totalHeight));
-        targetProgressRef.current = progress;
         setScrollProgress(progress);
       }
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('scroll', handleScroll);
-      if (video) video.removeEventListener('loadedmetadata', handleLoadedMetadata);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleContact = (contextMessage?: string) => {
@@ -223,6 +149,8 @@ onBack,
           ref={videoRef}
           playsInline
           muted
+          loop
+          autoPlay
           preload="auto"
           className="w-full h-full object-cover opacity-75 mix-blend-screen scale-105"
           src={videoSrc}
