@@ -15,6 +15,7 @@ const AeroCoreCatalog = React.lazy(() => import('./components/AeroCoreCatalog'))
 const NeoSkinCatalog = React.lazy(() => import('./components/NeoSkinCatalog'));
 const LandingShop = React.lazy(() => import('./components/LandingShop'));
 const LandingBlog = React.lazy(() => import('./components/LandingBlog'));
+const LandingPartners = React.lazy(() => import('./components/LandingPartners'));
 import CookieBanner from './components/CookieBanner';
 
 export type BrandPage =
@@ -35,7 +36,8 @@ export type BrandPage =
   | 'neoskin-bunker'
   | 'neoskin-apocalypse'
   | 'blog'
-  | 'shop';
+  | 'shop'
+  | 'partners';
 
 type AeroCoreProduct = 'ghost' | 'phantom' | 'spectre' | 'wraith';
 type NeoSkinProduct = 'bunker' | 'apocalypse';
@@ -118,6 +120,8 @@ export const App: React.FC = () => {
         setCurrentPage('blog');
       } else if (path === '/shop') {
         setCurrentPage('shop');
+      } else if (path === '/partners' || path.startsWith('/partners')) {
+        setCurrentPage('partners');
       } else if (path === '/winf-home') {
         setCurrentPage('winf-home');
       } else {
@@ -160,6 +164,7 @@ export const App: React.FC = () => {
       'securityblind': '/securityblind',
       'blog': '/blog',
       'shop': '/shop',
+      'partners': '/partners',
     };
     window.history.pushState({}, '', pathMap[page]);
     if ((window as any).lenis) {
@@ -385,6 +390,14 @@ export const App: React.FC = () => {
       {/* ── Shop ── */}
       {currentPage === 'shop' && (
         <LandingShop
+          onBack={() => navigateTo('winf-select')}
+          onOpenMenu={handleOpenMenu}
+        />
+      )}
+
+      {/* ── Partners ── */}
+      {currentPage === 'partners' && (
+        <LandingPartners
           onBack={() => navigateTo('winf-select')}
           onOpenMenu={handleOpenMenu}
         />
