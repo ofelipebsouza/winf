@@ -68,7 +68,7 @@ onBack,
   onNavigateToMiniblindVenetian,
   onNavigateToBlog,
   onContactConsultant,
-  videoSrc = '/videos/video-bg.mp4',
+  videoSrc = '/videos/dualreflect-hero.mp4',
   onOpenMenu,
 }) => {
   usePageMeta(PAGE_META['home']);
