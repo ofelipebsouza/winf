@@ -80,7 +80,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
           <div className="w-full max-w-7xl mx-auto my-auto py-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
             
             {/* Left Side: Giant Bold Navigation Words */}
-            <div className="lg:col-span-8 flex flex-col items-start space-y-1 sm:space-y-2 select-none">
+            <div className="lg:col-span-7 flex flex-col items-start space-y-1 sm:space-y-2 select-none">
               
               {/* WINDOWFILM */}
               <motion.button
@@ -145,7 +145,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
             </div>
 
             {/* Right Side: Secondary Links & Architectural Lines */}
-            <div className="lg:col-span-4 grid grid-cols-2 gap-8 text-base sm:text-lg font-normal text-zinc-300 font-sans">
+            <div className="lg:col-span-5 grid grid-cols-2 lg:grid-cols-3 gap-8 text-base sm:text-lg font-normal text-zinc-300 font-sans">
               
               {/* Column 1: Specific Lines */}
               <div className="space-y-4">
@@ -202,25 +202,13 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                 >
                   SecurityBlinder™
                 </button>
-                <button
-                  onClick={() => {
-                    onClose();
-                    if (onNavigateToShop) onNavigateToShop();
-                  }}
-                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base font-mono font-bold tracking-wider"
-                >
-                  BlackShop™
-                </button>
+              </div>
 
-                <button
-                  onClick={() => {
-                    onClose();
-                    if (onNavigateToCeramic) onNavigateToCeramic();
-                  }}
-                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base font-mono"
-                >
-                  Ceramic™
-                </button>
+              {/* Column 2: AeroCore™ Lines */}
+              <div className="space-y-4">
+                <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-400 block mb-2">
+                  // AEROCORE™
+                </span>
                 <button
                   onClick={() => {
                     onClose();
@@ -237,11 +225,20 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   }}
                   className="block text-left text-zinc-300 hover:text-emerald-300 transition-colors cursor-pointer text-sm sm:text-base font-mono"
                 >
-                  Neoskin™
+                  NeoSkin™
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onNavigateToCeramic) onNavigateToCeramic();
+                  }}
+                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base font-mono"
+                >
+                  Ceramic Armoring™
                 </button>
               </div>
 
-              {/* Column 2: Direct Services & Concierge */}
+              {/* Column 3: Direct Services & Concierge */}
               <div className="space-y-4">
                 <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-zinc-400 block mb-2">
                   // SERVICES
@@ -259,21 +256,11 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                 <button
                   onClick={() => {
                     onClose();
-                    if (onNavigateToWinf) onNavigateToWinf();
+                    if (onNavigateToShop) onNavigateToShop();
                   }}
-                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base"
+                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base font-mono font-bold tracking-wider"
                 >
-                  Shop / Projetos
-                </button>
-                <button
-                  onClick={() => {
-                    onClose();
-                    if (onOpenContact) onOpenContact('Careers / Licenciados');
-                    else window.open('https://wa.me/5513997815375?text=Olá,%20tenho%20interesse%20em%20ser%20um%20Licenciado%20WINF.', '_blank');
-                  }}
-                  className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base"
-                >
-                  Careers
+                  BlackShop™
                 </button>
                 <button
                   onClick={() => {
