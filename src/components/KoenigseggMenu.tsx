@@ -15,6 +15,7 @@ export interface KoenigseggMenuProps {
   onNavigateToBlackPro?: () => void;
   onNavigateToSecurityBlind?: () => void;
   onNavigateToShop?: () => void;
+  onNavigateToPartners?: () => void;
   onNavigateToBlog?: () => void;
   onNavigateToHome?: () => void;
   onOpenContact?: (subject?: string) => void;
@@ -34,6 +35,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
   onNavigateToBlackPro,
   onNavigateToSecurityBlind,
   onNavigateToShop,
+  onNavigateToPartners,
   onNavigateToBlog,
   onNavigateToHome,
   onOpenContact,
@@ -281,6 +283,15 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base"
                 >
                   Blog
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onNavigateToPartners) onNavigateToPartners();
+                  }}
+                  className="block text-left text-zinc-300 hover:text-amber-300 transition-colors cursor-pointer text-sm sm:text-base font-mono font-bold"
+                >
+                  Partners™
                 </button>
                 <button
                   onClick={() => {

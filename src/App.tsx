@@ -215,6 +215,7 @@ export const App: React.FC = () => {
         onNavigateToBlackPro={() => navigateTo('blackpro')}
         onNavigateToSecurityBlind={() => navigateTo('securityblind')}
         onNavigateToShop={() => navigateTo('shop')}
+        onNavigateToPartners={() => navigateTo('partners')}
         onNavigateToBlog={() => { setBlogSlug(null); navigateTo('blog'); }}
         onNavigateToHome={() => navigateTo('winf-select')}
         onOpenContact={() => {}}
