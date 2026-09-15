@@ -401,6 +401,11 @@ export const App: React.FC = () => {
         <LandingPartners
           onBack={() => navigateTo('winf-select')}
           onOpenMenu={handleOpenMenu}
+          onNavigateToBrand={() => navigateTo('winf-select')}
+          onNavigateToAeroCore={() => navigateTo('aerocore')}
+          onNavigateToNeoskin={() => navigateTo('neoskin')}
+          onNavigateToShop={() => navigateTo('shop')}
+          onNavigateToBlog={() => { setBlogSlug(null); navigateTo('blog'); }}
         />
       )}
 

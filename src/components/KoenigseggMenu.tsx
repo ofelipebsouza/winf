@@ -269,7 +269,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   }}
                   className="block text-left text-zinc-300 hover:text-white transition-colors cursor-pointer text-sm sm:text-base"
                 >
-                  Blog
+                  Journal
                 </button>
                 <button
                   onClick={() => {

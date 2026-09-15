@@ -149,6 +149,13 @@ export const PAGE_META: Record<string, PageMeta> = {
     image: '/images/og/og-shop.png',
     jsonLd: [breadcrumbJsonLd([{ name: 'Início', path: '/' }, { name: 'BlackShop', path: '/shop' }])],
   },
+  partners: {
+    title: 'WINF Partners™ — Tecnologia Invisível. Domínio Absoluto.',
+    description:
+      'WINF Partners™: ecossistema B2B de expansão global. Planos de licenciamento Asset Light Select, Kiosk Arquitetônico e Flagship Studio, garantia rastreável em blockchain e portal do especificador. Acesso sob análise de board.',
+    path: '/partners',
+    jsonLd: [breadcrumbJsonLd([{ name: 'Início', path: '/' }, { name: 'WINF Partners™', path: '/partners' }])],
+  },
   blog: {
     title: 'WINF Journal™ — Artigos sobre Tecnologia e Engenharia do Vidro',
     description:
