@@ -143,8 +143,8 @@ onBack,
 
   // AEROCORE™ — linha automotiva, aeronáutica e náutica
   const AEROCORE_BRANDS: BrandCard[] = [
-    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/aerocore/aerocore-hero.mp4', poster: '/images/aerocore-hero.webp', action: onNavigateToAerocore },
-    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/neoskin/neoskin-hero.mp4', poster: '/images/neoskin-hero.webp', action: onNavigateToNeoskin },
+    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/1.mp4', poster: '/images/aerocore-hero.webp', action: onNavigateToAerocore },
+    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/2.mp4', poster: '/images/neoskin-hero.webp', action: onNavigateToNeoskin },
     { id: 'ceramic', name: 'Ceramic Armoring™', short: 'CERAMIC™', category: 'BLINDAGEM MOLECULAR 9H', video: '/videos/1.mp4', poster: '/images/ceramic-hero.webp', action: onNavigateToCeramic },
   ];
 
