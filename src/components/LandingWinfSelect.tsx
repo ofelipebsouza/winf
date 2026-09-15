@@ -130,38 +130,110 @@ onBack,
   };
 
   // Brand showcase covers — logo over looping background video
-  const BRANDS: { id: string; name: string; short?: string; category: string; logo?: string; logoClass?: string; video: string; poster: string; action?: () => void }[] = [
-    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/aerocore/aerocore-hero.mp4', poster: '/images/aerocore-hero.webp', action: onNavigateToAerocore },
-    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/neoskin/neoskin-hero.mp4', poster: '/images/neoskin-hero.webp', action: onNavigateToNeoskin },
-    { id: 'ceramic', name: 'Ceramic Armoring™', short: 'CERAMIC™', category: 'BLINDAGEM MOLECULAR 9H', video: '/videos/1.mp4', poster: '/images/ceramic-hero.webp', action: onNavigateToCeramic },
+  interface BrandCard { id: string; name: string; short?: string; category: string; logo?: string; logoClass?: string; video: string; poster: string; action?: () => void; }
+
+  // WINF SELECT™ — linha arquitetônica (patrimônio e projetos de vidro)
+  const WINF_SELECT_BRANDS: BrandCard[] = [
     { id: 'invisible', name: 'Invisible™', category: 'NANO CERÂMICA ARQUITETÔNICA', logo: '/logo-invisible.svg', logoClass: 'w-32', video: '/videos/invisible-hero.mp4', poster: '/images/invisible-poster-1.webp', action: onNavigateToInvisible },
-    { id: 'dual-reflect', name: 'Dual Reflect™', category: 'CONTROLE SOLAR REFLETIVO', logo: '/logo-dual-reflect.svg', logoClass: 'w-32', video: '/videos/dualreflect-hero.mp4', poster: '/images/dualreflect-poster-1.webp', action: onNavigateToDualReflect },
     { id: 'blackpro', name: 'BlackPro™', category: 'PRIVACIDADE ARQUITETÔNICA', logo: '/logo-blackpro.svg', logoClass: 'w-32', video: '/videos/blackpro-hero.mp4', poster: '/images/blackpro-poster-1.webp', action: onNavigateToBlackPro },
+    { id: 'dual-reflect', name: 'Dual Reflect™', category: 'CONTROLE SOLAR REFLETIVO', logo: '/logo-dual-reflect.svg', logoClass: 'w-32', video: '/videos/dualreflect-hero.mp4', poster: '/images/dualreflect-poster-1.webp', action: onNavigateToDualReflect },
     { id: 'securityblind', name: 'SecurityBlinder™', short: 'SECURITYBLINDER™', category: 'SAFETY & SECURITY FILM', video: '/videos/securityblind/sbv-impact.mp4', poster: '/images/securityblind/scene-07.webp', action: onNavigateToSecurityBlinder },
     { id: 'miniblind-venetian', name: 'Miniblind & Venetian™', category: 'PELÍCULA DECORATIVA', logo: '/images/miniblind-venetian/minibrind-venetian-logo.svg', logoClass: 'w-28', video: '/videos/mbv-figures.mp4', poster: '/images/miniblind-venetian/scene-01.webp', action: onNavigateToMiniblindVenetian },
   ];
 
-  return (
-    <div className="relative bg-black text-white selection:bg-white/20 selection:text-white font-sans overflow-x-hidden">
-      {/* GLOBAL FIXED BACKGROUND VIDEO (HIGH CLARITY & LUMINOSITY) */}
-      <div className="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-        <video
-          ref={videoRef}
-          playsInline
-          muted
-          loop
-          autoPlay
-          preload="auto"
-          className="w-full h-full object-cover opacity-75 mix-blend-screen scale-105"
-          src={videoSrc}
+  // AEROCORE™ — linha automotiva, aeronáutica e náutica
+  const AEROCORE_BRANDS: BrandCard[] = [
+    { id: 'aerocore', name: 'AeroCore™', short: 'AEROCORE™', category: 'DEFESA TÉRMICA AUTOMOTIVA', video: '/videos/aerocore/aerocore-hero.mp4', poster: '/images/aerocore-hero.webp', action: onNavigateToAerocore },
+    { id: 'neoskin', name: 'NeoSkin™', short: 'NEOSKIN™', category: 'PAINT PROTECTION FILM', video: '/videos/neoskin/neoskin-hero.mp4', poster: '/images/neoskin-hero.webp', action: onNavigateToNeoskin },
+    { id: 'ceramic', name: 'Ceramic Armoring™', short: 'CERAMIC™', category: 'BLINDAGEM MOLECULAR 9H', video: '/videos/1.mp4', poster: '/images/ceramic-hero.webp', action: onNavigateToCeramic },
+  ];
+
+  const renderBrandCard = (brand: BrandCard, idx: number) => (
+    <motion.div
+      key={brand.id}
+      initial={{ opacity: 0, y: 50, scale: 0.97, filter: 'blur(8px)' }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 0.8, delay: (idx % 4) * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      onClick={() => brand.action && brand.action()}
+      className="relative group overflow-hidden rounded-none border border-white/15 hover:border-white/50 bg-black/50 shadow-2xl cursor-pointer transition-all duration-300 flex flex-col"
+    >
+      {/* Cover — logo over looping video */}
+      <div className="relative h-64 sm:h-72 overflow-hidden">
+        <LazyVideo
+          poster={brand.poster}
+          src={brand.video}
+          className="w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
         />
-        {/* Soft, Transparent Vignette */}
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+
+        {/* Centered logo */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
+          {brand.logo ? (
+            <img
+              width={128}
+              height={48}
+              src={brand.logo}
+              alt={brand.name}
+              className={`${brand.logoClass || 'w-32'} h-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500`}
+            />
+          ) : (
+            <h3 className="text-xl sm:text-2xl font-light tracking-[0.2em] text-white uppercase text-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] group-hover:scale-105 transition-transform duration-500 whitespace-nowrap">
+              {brand.short}
+            </h3>
+          )}
+        </div>
       </div>
 
-      {/* 01 — HERO SECTION (FULLSCREEN VIEWPORT) */}
-      <section className="relative z-10 min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none">
+      {/* Footer strip */}
+      <div className="flex items-center justify-between px-5 py-4 border-t border-white/10">
+        <div className="min-w-0">
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 block truncate">{brand.category}</span>
+          <span className="text-xs font-mono text-white font-bold uppercase tracking-wider">{brand.name}</span>
+        </div>
+        <span className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-zinc-300 group-hover:text-white shrink-0 ml-3">
+          <span>VER</span>
+          <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+        </span>
+      </div>
+    </motion.div>
+  );
+
+  // Pause hero video while it is off-screen (saves decode when scrolled past)
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) v.play().catch(() => {});
+        else v.pause();
+      },
+      { threshold: 0.1 }
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <div className="relative bg-black text-white selection:bg-white/20 selection:text-white font-sans overflow-x-hidden">
+      {/* 01 — HERO SECTION (FULLSCREEN VIEWPORT, background video confined to this section) */}
+      <section className="relative z-10 min-h-screen w-full flex flex-col justify-between p-6 sm:p-10 md:p-14 select-none overflow-hidden">
+        {/* Hero background video + vignette (absolute, only covers the hero) */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            loop
+            autoPlay
+            preload="auto"
+            className="w-full h-full object-cover opacity-75 mix-blend-screen scale-105"
+            src={videoSrc}
+          />
+          {/* Soft, Transparent Vignette */}
+          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/40" />
+        </div>
         {/* Header */}
         <header className="w-full flex items-center justify-between z-30 relative">
           {/* WINF Brand Logo */}
@@ -203,12 +275,17 @@ onBack,
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="text-center"
           >
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light tracking-[0.18em] sm:tracking-[0.25em] md:tracking-[0.3em] text-white uppercase leading-none font-sans drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] whitespace-nowrap flex items-center justify-center">
-              <span>WINF SELECT</span>
-              <span className="text-xs sm:text-base md:text-xl lg:text-2xl font-light text-zinc-300 ml-1.5 sm:ml-2.5 -translate-y-2 sm:-translate-y-4 md:-translate-y-6">
+            <div className="relative inline-block">
+              <h1 className="text-[3.5rem] sm:text-6xl lg:text-7xl xl:text-8xl font-light tracking-[0.18em] sm:tracking-[0.25em] md:tracking-[0.3em] text-white uppercase leading-none font-sans drop-shadow-[0_4px_30px_rgba(0,0,0,0.95)] whitespace-nowrap -mr-[0.18em] sm:-mr-[0.25em] md:-mr-[0.3em]">
+                WINF
+              </h1>
+              <span className="absolute top-0 right-0 translate-x-full -translate-y-1/2 text-xs sm:text-base md:text-xl lg:text-2xl font-light text-zinc-300">
                 TM
               </span>
-            </h1>
+            </div>
+            <p className="mt-5 sm:mt-7 text-[10px] sm:text-xs md:text-sm font-sans uppercase tracking-[0.45em] sm:tracking-[0.6em] text-zinc-300 drop-shadow-[0_2px_18px_rgba(0,0,0,0.95)]">
+              Premium Quality Windowfilm
+            </p>
           </motion.div>
         </div>
 
@@ -288,67 +365,48 @@ onBack,
       <section id="ecossistema" className="relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-black/30 backdrop-blur-[1px]">
         <div className="max-w-6xl mx-auto">
           <motion.div {...fadeInLabel} className="text-[11px] sm:text-xs font-mono uppercase text-zinc-400 mb-6 drop-shadow">
-            WINF ECOSYSTEM // BRANDS
+            WINF ECOSYSTEM // PRODUCT LINES
           </motion.div>
 
           <motion.h2 {...fadeInUp} className="text-3xl sm:text-5xl font-light text-white uppercase tracking-tight mb-6 drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
             Marcas do Ecossistema
           </motion.h2>
-          <motion.p {...fadeInUp} transition={{ duration: 0.9, delay: 0.1 }} className="text-sm sm:text-base text-zinc-300 font-light max-w-2xl mb-16 drop-shadow">
+          <motion.p {...fadeInUp} transition={{ duration: 0.9, delay: 0.1 }} className="text-sm sm:text-base text-zinc-300 font-light max-w-2xl mb-14 drop-shadow">
             Cada marca com sua engenharia dedicada — proteção térmica, blindagem, privacidade e estética em um só ecossistema.
           </motion.p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {BRANDS.map((brand, idx) => (
-              <motion.div
-                key={brand.id}
-                initial={{ opacity: 0, y: 50, scale: 0.97, filter: 'blur(8px)' }}
-                whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
-                viewport={{ once: false, amount: 0.2 }}
-                transition={{ duration: 0.8, delay: (idx % 4) * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => brand.action && brand.action()}
-                className="relative group overflow-hidden rounded-none border border-white/15 hover:border-white/50 bg-black/50 shadow-2xl cursor-pointer transition-all duration-300 flex flex-col"
-              >
-                {/* Cover — logo over looping video */}
-                <div className="relative h-64 sm:h-72 overflow-hidden">
-                  <LazyVideo
-                    poster={brand.poster}
-                    src={brand.video}
-                    className="w-full h-full object-cover opacity-45 group-hover:opacity-70 group-hover:scale-105 transition-all duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+          {/* ── WINF SELECT™ // ARQUITETURA ── */}
+          <motion.div {...fadeInLabel} className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-3">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-light text-white uppercase tracking-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+              <span className="align-top font-mono text-xs sm:text-sm text-zinc-500 tracking-[0.3em] mr-2">//</span>
+              WINF SELECT™
+            </h3>
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-zinc-300 border border-white/15 bg-black/40 backdrop-blur-sm px-3 py-1">GLASS + HOME</span>
+            <div className="h-px flex-1 min-w-[40px] bg-white/10" />
+          </motion.div>
+          <motion.p {...fadeInUp} transition={{ duration: 0.9, delay: 0.05 }} className="text-xs sm:text-sm text-zinc-400 font-light max-w-2xl mb-8 drop-shadow">
+            Linhas para patrimônio, fachadas e projetos de vidro — controle térmico, privacidade, segurança e estética.
+          </motion.p>
 
-                  {/* Centered logo */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center px-6">
-                    {brand.logo ? (
-                      <img
-                        width={128}
-                        height={48}
-                        src={brand.logo}
-                        alt={brand.name}
-                        className={`${brand.logoClass || 'w-32'} h-auto drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform duration-500`}
-                      />
-                    ) : (
-                      <h3 className="text-xl sm:text-2xl font-light tracking-[0.2em] text-white uppercase text-center drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)] group-hover:scale-105 transition-transform duration-500 whitespace-nowrap">
-                        {brand.short}
-                      </h3>
-                    )}
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {WINF_SELECT_BRANDS.map((brand, idx) => renderBrandCard(brand, idx))}
+          </div>
 
-                {/* Footer strip */}
-                <div className="flex items-center justify-between px-5 py-4 border-t border-white/10">
-                  <div className="min-w-0">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-400 block truncate">{brand.category}</span>
-                    <span className="text-xs font-mono text-white font-bold uppercase tracking-wider">{brand.name}</span>
-                  </div>
-                  <span className="flex items-center gap-1.5 text-[10px] font-mono uppercase tracking-widest text-zinc-300 group-hover:text-white shrink-0 ml-3">
-                    <span>VER</span>
-                    <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                </div>
-              </motion.div>
-            ))}
+          {/* ── AEROCORE™ // AUTOMOTIVO · AERONÁUTICO · NÁUTICO ── */}
+          <motion.div {...fadeInLabel} className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-20 mb-3">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-light text-white uppercase tracking-tight drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)]">
+              <span className="align-top font-mono text-xs sm:text-sm text-zinc-500 tracking-[0.3em] mr-2">//</span>
+              AEROCORE™
+            </h3>
+            <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.25em] text-zinc-300 border border-white/15 bg-black/40 backdrop-blur-sm px-3 py-1">AUTOMOTIVO · AERONÁUTICO · NÁUTICO</span>
+            <div className="h-px flex-1 min-w-[40px] bg-white/10" />
+          </motion.div>
+          <motion.p {...fadeInUp} transition={{ duration: 0.9, delay: 0.05 }} className="text-xs sm:text-sm text-zinc-400 font-light max-w-2xl mb-8 drop-shadow">
+            Defesa térmica, proteção de pintura e blindagem molecular para veículos, aeronaves e embarcações.
+          </motion.p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {AEROCORE_BRANDS.map((brand, idx) => renderBrandCard(brand, idx))}
           </div>
         </div>
       </section>

@@ -427,8 +427,13 @@ onBack,
       </section>
 
       {/* 03 — ARSENAL.AEROCORE() // SOLUÇÕES DE PELÍCULAS */}
-      <section id="arsenal" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F]">
-        <div className="max-w-7xl mx-auto">
+      <section id="arsenal" className="cv-auto relative z-10 px-6 sm:px-12 md:px-20 py-32 border-t border-white/10 bg-[#06080F] overflow-hidden">
+        {/* Section background video (AeroCore hero footage) — like NeoSkin's live video block */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <LazyVideo poster="/images/aerocore-hero.webp" src="/videos/1.mp4" className="w-full h-full object-cover brightness-[0.45] saturate-[0.9]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#06080F] via-black/20 to-[#06080F]" />
+        </div>
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Centered Section Header */}
           <div className="text-center flex flex-col items-center mb-16">
             <motion.div
@@ -452,7 +457,7 @@ onBack,
             <motion.div
               {...fadeInUp}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+              className="p-8 sm:p-10 rounded-none bg-black/45 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -492,7 +497,7 @@ onBack,
             <motion.div
               {...fadeInUp}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+              className="p-8 sm:p-10 rounded-none bg-black/45 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -532,7 +537,7 @@ onBack,
             <motion.div
               {...fadeInUp}
               transition={{ duration: 0.8, delay: 0.3 }}
-              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+              className="p-8 sm:p-10 rounded-none bg-black/45 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">
@@ -572,7 +577,7 @@ onBack,
             <motion.div
               {...fadeInUp}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="p-8 sm:p-10 rounded-none bg-black/75 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
+              className="p-8 sm:p-10 rounded-none bg-black/45 hover:bg-[#2563EB] border border-white/15 hover:border-[#2563EB] backdrop-blur-md shadow-2xl flex flex-col justify-between transition-all duration-300 group cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-6">

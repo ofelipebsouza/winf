@@ -82,49 +82,62 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
             {/* Left Side: Giant Bold Navigation Words */}
             <div className="lg:col-span-7 flex flex-col items-start space-y-1 sm:space-y-2 select-none">
               
-              {/* WINDOWFILM */}
+              {/* WINF SELECT (HOME) */}
               <motion.button
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.05, duration: 0.4 }}
                 onClick={() => {
                   onClose();
-                  if (onNavigateToAeroCore) onNavigateToAeroCore();
-                  else handleScrollOrNav('c4-horizontal-tabs-4');
+                  if (onNavigateToHome) onNavigateToHome();
+                  else handleScrollOrNav('linhas');
                 }}
-                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95]"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[clamp(3rem,4.9vw,5rem)] font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95] min-w-0"
               >
-                WINDOWFILM
+                WINF SELECT™
               </motion.button>
 
-              {/* ARCHITECTURAL (WINF SELECT) */}
+              {/* AEROCORE */}
               <motion.button
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.1, duration: 0.4 }}
                 onClick={() => {
                   onClose();
-                  if (onNavigateToWinf) onNavigateToWinf();
-                  else handleScrollOrNav('linhas');
+                  if (onNavigateToAeroCore) onNavigateToAeroCore();
+                  else handleScrollOrNav('c4-horizontal-tabs-4');
                 }}
-                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95]"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[clamp(3rem,4.9vw,5rem)] font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95] min-w-0"
               >
-                ARCHITECTURAL
+                AEROCORE™
               </motion.button>
 
-              {/* TECHNOLOGY */}
+              {/* ABOUT US (seção sobre da WINF SELECT) */}
               <motion.button
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.15, duration: 0.4 }}
                 onClick={() => {
                   onClose();
-                  if (onNavigateToCeramic) onNavigateToCeramic();
-                  else handleScrollOrNav('c6-feature-block-5');
+                  const goAbout = () => {
+                    const el = document.getElementById('manifesto');
+                    if (el) {
+                      if ((window as any).lenis) (window as any).lenis.scrollTo(el, { duration: 1.2 });
+                      else el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  };
+                  if (window.location.pathname === '/') {
+                    goAbout();
+                  } else if (onNavigateToWinf) {
+                    onNavigateToWinf();
+                    setTimeout(goAbout, 150);
+                  } else {
+                    handleScrollOrNav('manifesto');
+                  }
                 }}
-                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95]"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[clamp(3rem,4.9vw,5rem)] font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95] min-w-0"
               >
-                TECHNOLOGY
+                ABOUT US
               </motion.button>
 
               {/* PPF */}
@@ -137,7 +150,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                   if (onNavigateToNeoskin) onNavigateToNeoskin();
                   else handleScrollOrNav('c6-feature-block-16');
                 }}
-                className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95]"
+                className="text-4xl sm:text-6xl md:text-7xl lg:text-[clamp(3rem,4.9vw,5rem)] font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95] min-w-0"
               >
                 PPF
               </motion.button>
