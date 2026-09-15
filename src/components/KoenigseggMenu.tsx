@@ -127,7 +127,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                 TECHNOLOGY
               </motion.button>
 
-              {/* PPF ARMOR */}
+              {/* PPF */}
               <motion.button
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -139,7 +139,7 @@ export const KoenigseggMenu: React.FC<KoenigseggMenuProps> = ({
                 }}
                 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-sans font-black tracking-tight uppercase text-white hover:text-zinc-400 transition-colors cursor-pointer text-left leading-[0.95]"
               >
-                PPF ARMOR
+                PPF
               </motion.button>
 
             </div>
